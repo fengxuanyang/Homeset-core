@@ -1,0 +1,45 @@
+<resources>
+
+    <!-- Base application theme. -->
+    <style name="AppTheme" parent="Theme.AppCompat.Light.NoActionBar">
+        <!-- Customize your theme here. -->
+        <item name="colorPrimary">@color/colorPrimary</item>
+        <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
+        <item name="colorAccent">@color/colorAccent</item>
+        <item name="windowNoTitle">true</item>
+        <item name="windowActionBar">false</item>
+        <item name="android:windowFullscreen">true</item>
+        <item name="android:windowContentOverlay">@null</item>
+    </style>
+
+    <style name="BottomDialog" parent="@style/AppTheme">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">match_parent</item>
+        <item name="android:windowIsFloating">true</item>
+        <item name="android:windowAnimationStyle">@style/bottom_fragment_animation</item>
+    </style>
+
+    <style name="bottom_fragment_animation">
+        <item name="android:windowEnterAnimation">@anim/dialog_in_bottom</item>
+        <item name="android:windowExitAnimation">@anim/dialog_out_bottom</item>
+    </style>
+
+    <declare-styleable name="VerticalTabLayout">
+        <attr name="indicator_color" format="color"/>
+        <attr name="indicator_width" format="dimension"/>
+        <attr name="indicator_corners" format="dimension"/>
+        <attr name="indicator_gravity" format="enum">
+            <enum name="left" value="3"/>
+            <enum name="right" value="5"/>
+            <enum name="fill" value="119"/>
+        </attr>
+
+        <attr name="tab_margin" format="dimension"/>
+        <attr name="tab_mode" format="enum">
+            <enum name="fixed" value="10"/>
+            <enum name="scrollable" value="11"/>
+        </attr>
+        <attr name="tab_height" format="dimension">
+        </attr>
+    </declare-styleable>
+</resources>

@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="colorPrimary">#3F51B5</color>
+    <color name="colorPrimaryDark">#303F9F</color>
+    <color name="colorAccent">#FF4081</color>
+
+    <color name="colorYellow">#ffcc00</color>
+    <color name="colorPurple">#9999ff</color>
+    <color name="colorGreen">#99cc66</color>
+    <color name="colorBlue">#99ccff</color>
+    <color name="colorPink">#ff6666</color>
+    <color name="colorOrange">#ff9900</color>
+    <color name="bottomSheetNormalBackground">#ff333333</color>
+    <color name="transparent_background">#ffffffff</color>
+
+    <color name="colorWhite">#fff9f9f9</color>
+    <color name="colorGray">#ff6a6a6a</color>
+    <color name="border">#ff999999</color>
+    <color name="colorPowderblue">#ff99ccff</color>
+    <color name="colorPowdergreen">#ff99cc66</color>
+    <color name="colorTextGray">#ff808080</color>
+    <color name="colorWhiteBg">#40f9f9f9</color>
+
+</resources>

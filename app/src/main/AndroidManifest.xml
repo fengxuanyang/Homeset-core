@@ -1,0 +1,165 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+          package="com.ragentek.homeset.core"
+    >
+
+    <uses-sdk android:minSdkVersion="21"/>
+
+    <uses-permission android:name="android.permission.INTERNET"/>
+    <uses-permission android:name="android.permission.RECORD_AUDIO"/>
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE"/>
+    <uses-permission android:name="android.permission.ACCESS_WIFI_STATE"/>
+    <uses-permission android:name="android.permission.CHANGE_NETWORK_STATE"/>
+    <uses-permission android:name="android.permission.READ_PHONE_STATE"/>
+    <uses-permission android:name="android.permission.READ_CONTACTS"/>
+
+    <uses-permission android:name="android.permission.CHANGE_WIFI_STATE"/>
+    <uses-permission android:name="android.permission.CHANGE_CONFIGURATION"/>
+    <uses-permission android:name="android.permission.WAKE_LOCK"/>
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION"/>
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION"/>
+    <uses-permission android:name="android.permission.ACCESS_LOCATION_EXTRA_COMMANDS"/>
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"/>
+    <uses-permission android:name="android.permission.WRITE_SETTINGS"/>
+    <uses-permission android:name="android.permission.BLUETOOTH_ADMIN"/>
+    <uses-permission android:name="android.permission.BLUETOOTH"/>
+    <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED"/>
+    <uses-permission android:name="android.permission.READ_PHONE_STATE"/>
+    <uses-permission android:name="android.permission.PROCESS_OUTGOING_CALLS"/>
+    <uses-permission android:name="android.permission.DISABLE_KEYGUARD"/>
+
+    <application
+        android:name=".HomesetApp"
+        android:allowBackup="true"
+        android:icon="@mipmap/ic_launcher"
+        android:label="@string/app_name"
+        android:supportsRtl="true"
+        android:theme="@style/AppTheme">
+
+        <meta-data
+            android:name="com.amap.api.v2.apikey"
+            android:value="8f9128008c9f704381d070d30ee025e1"/>
+        <!--For local test: d5aa9e7179301e7d10c69404afb4af26-->
+
+        <service
+            android:name="com.ragentek.homeset.core.HomesetService"
+            android:enabled="true"
+            android:exported="false">
+            <intent-filter>
+                <action android:name="ragentek.intent.action.HOMESET_START"/>
+                <action android:name="ragentek.intent.action.HOMESET_STOP"/>
+                <action android:name="ragentek.intent.action.HOMESET_DUMP"/>
+                <action android:name="ragentek.intent.action.HOMESET_DEBUG"/>
+            </intent-filter>
+        </service>
+
+        <!--<activity android:name=".test.HomesetTestActivity">-->
+        <!--<intent-filter>-->
+        <!--<action android:name="android.intent.action.MAIN"/>-->
+        <!--<category android:name="android.intent.category.LAUNCHER" />-->
+        <!--</intent-filter>-->
+        <!--</activity>-->
+
+        <activity android:name="com.ragentek.homeset.speech.test.SpeechTestActivity">
+            <!--<intent-filter>-->
+            <!--<action android:name="android.intent.action.MAIN"/>-->
+            <!--<category android:name="android.intent.category.LAUNCHER" />-->
+            <!--</intent-filter>-->
+        </activity>
+
+        <service
+            android:name="com.ragentek.homeset.speech.SpeechService"
+            android:enabled="true"
+            android:exported="true"/>
+
+
+        <service android:name="com.amap.api.location.APSService"></service>
+
+        <activity
+            android:name="com.ragentek.homeset.ui.login.LoginActivity"
+            android:screenOrientation="landscape">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN"/>
+                <action android:name="android.intent.action.VIEW"/>
+            </intent-filter>
+        </activity>
+
+        <receiver android:name="com.ragentek.homeset.weather.WeatherReceiver">
+            <intent-filter>
+                <action android:name="android.intent.action.BOOT_COMPLETED"/>
+            </intent-filter>
+        </receiver>
+
+        <service
+            android:name="com.ragentek.homeset.weather.WeatherService"
+            android:exported="true"
+            android:process=":weather">
+            <intent-filter>
+                <action android:name="com.ragentek.weatherservice.start_service"/>
+            </intent-filter>
+        </service>
+
+        <activity
+            android:name="com.ragentek.homeset.ui.launcher.LauncherActivity"
+            android:clearTaskOnLaunch="true"
+            android:launchMode="singleTask"
+            android:screenOrientation="landscape"
+            android:stateNotNeeded="true">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN"/>
+                <action android:name="android.intent.action.VIEW"/>
+
+                <category android:name="android.intent.category.LAUNCHER"/>
+                <category android:name="android.intent.category.DEFAULT"/>
+                <category android:name="android.intent.category.HOME"/>
+            </intent-filter>
+        </activity>
+
+        <activity
+            android:name="com.ragentek.homeset.ui.utils.SettingActivity"
+            android:screenOrientation="landscape">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN"/>
+                <action android:name="android.intent.action.VIEW"/>
+            </intent-filter>
+        </activity>
+
+
+        <!--  audio center -->
+        <activity
+            android:name="com.ragentek.homeset.audiocenter.AudioCenterBaseActivity"
+            android:screenOrientation="landscape"/>
+        <activity
+            android:name="com.ragentek.homeset.audiocenter.CategoryActivity"
+            android:screenOrientation="landscape"/>
+
+        <activity
+            android:name="com.ragentek.homeset.audiocenter.AudioRecommendActivity"
+            android:screenOrientation="landscape">
+
+        </activity>
+
+
+        <activity
+            android:name="com.ragentek.homeset.audiocenter.AudioPlayActivity"
+            android:screenOrientation="landscape">
+            <intent-filter>
+                <action android:name="android.intent.action.playfav"/>
+                <action android:name="android.intent.action.playtag"/>
+                <action android:name="android.intent.action.playradio"/>
+                <action android:name="android.intent.action.playmusic"/>
+
+                <category android:name="android.intent.category.DEFAULT"/>
+            </intent-filter>
+        </activity>
+
+        <service android:name="com.ragentek.homeset.audiocenter.service.DownloadService"/>
+
+        <receiver android:name="com.ragentek.homeset.ui.login.LoginReceiver">
+            <intent-filter>
+                <action android:name="android.intent.action.BOOT_COMPLETED"/>
+            </intent-filter>
+        </receiver>
+    </application>
+</manifest>

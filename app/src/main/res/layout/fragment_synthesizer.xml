@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:background="#ffffff">
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="140dip"
+        android:layout_weight="4"
+        android:id="@+id/textLog"
+        android:scrollbars="vertical"
+        android:singleLine="false"
+        android:text="Log message" />
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="140dip"
+        android:layout_marginBottom="16dp"
+        android:layout_marginTop="16dp"
+        >
+
+        <LinearLayout
+            android:orientation="horizontal"
+            android:layout_width="match_parent"
+            android:layout_height="70dip">
+
+            <Button
+                android:layout_height="match_parent"
+                android:layout_width="wrap_content"
+                android:layout_weight="1"
+                android:text="@string/speak_start"
+                android:id="@+id/btnStartSpeak"/>
+
+            <Button
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:text="@string/speak_stop"
+                android:id="@+id/btnStopSpeak"
+                android:layout_width="wrap_content" />
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:orientation="horizontal"
+            android:layout_width="match_parent"
+            android:layout_height="70dip"
+            android:layout_alignParentBottom="true"
+            android:layout_alignParentStart="true">
+
+            <Button
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:text="@string/speak_pause"
+                android:id="@+id/btnPauseSpeak"
+                android:layout_width="100dip" />
+
+            <Button
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:text="@string/speak_resume"
+                android:id="@+id/btnResumeSpeak"
+                android:layout_width="100dip" />
+
+            <Button
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:text="@string/speak_state"
+                android:id="@+id/btnStateSpeak"
+                android:layout_width="100dip" />
+        </LinearLayout>
+    </RelativeLayout>
+
+
+</LinearLayout>

@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+          package="com.ragentek.homeset.audiocenter">
+
+    <uses-permission android:name="android.permission.INTERNET"/>
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
+    <uses-permission android:name="android.permission.ACCESS_WIFI_STATE"/>
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE"/>
+    <uses-permission android:name="android.permission.CHANGE_NETWORK_STATE"/>
+    <uses-permission android:name="android.permission.READ_PHONE_STATE"/>
+
+    <application
+        android:allowBackup="true"
+        android:icon="@mipmap/ic_launcher"
+        android:label="@string/app_name"
+        android:supportsRtl="true"
+        android:theme="@style/AppTheme">
+
+        <!-- xmly-->
+        <meta-data
+            android:name="app_key"
+            android:value="14b0920ad1e0170de6d6845d334d30f2"/>
+        <!-- xmly-->
+        <meta-data
+            android:name="pack_id"
+            android:value="com.ragentek.homeset.audiocenter"/>
+
+        <activity android:name=".MainActivity">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN"/>
+                <category android:name="android.intent.category.LAUNCHER"/>
+            </intent-filter>
+        </activity>
+
+        <service
+            android:name="com.ragentek.homeset.audiocenter.MediaService"
+            android:exported="true"
+            android:label="@string/app_name"
+            />
+
+        <service
+            android:name="com.ximalaya.ting.android.opensdk.player.service.XmPlayerService"
+            android:exported="true"
+            android:process=":player"/>
+
+        <receiver
+            android:name="com.ximalaya.ting.android.opensdk.player.receive.PlayerReceiver"
+            android:exported="true"
+            android:process=":player">
+            <intent-filter>
+                <action android:name="com.ximalaya.ting.android.ACTION_CONTROL_START_PAUSE"/>
+                <action android:name="com.ximalaya.ting.android.ACTION_CONTROL_PLAY_PRE"/>
+                <action android:name="com.ximalaya.ting.android.ACTION_CONTROL_PLAY_NEXT"/>
+                <action android:name="com.ximalaya.ting.android.ACTION_CLOSE"/>
+                <action android:name="com.ximalaya.ting.android.ACTION_CONTROL_RELEASE_SERVICE"/>
+            </intent-filter>
+        </receiver>
+        <receiver
+            android:name="com.ximalaya.ting.android.opensdk.player.receive.WireControlReceiver"
+            android:exported="true"></receiver>
+    </application>
+
+</manifest>

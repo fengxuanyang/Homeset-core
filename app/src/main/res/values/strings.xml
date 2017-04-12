@@ -1,0 +1,83 @@
+<resources>
+    <string name="app_name">Homeset-core</string>
+
+    <string name="speak_start">Start</string>
+    <string name="speak_stop">Stop</string>
+    <string name="speak_pause">Pause</string>
+    <string name="speak_resume">Resume</string>
+    <string name="speak_state">State</string>
+    <string name="speak_text">今天，我们在这里隆重集会，庆祝中国共产党成立95周年，回顾中国共产党团结带领中国人民不懈奋斗的光辉历程，实现中华民族伟大复兴的中国梦胜利前进。</string>
+
+    <string name="recognize_start">Start</string>
+    <string name="recognize_stop">Stop</string>
+    <string name="recognize_cancel">Cancel</string>
+
+    <string name="wakeup_start">Start</string>
+    <string name="wakeup_stop">Stop</string>
+
+    <string name="today">今天</string>
+    <string name="day_night">白天到夜间</string>
+    <string name="weather_not_found_city">查询不到该省市的天气</string>
+    <string name="weather_not_found_day">查询不到该时间段的天气</string>
+
+    <string name="listen_panel">听一听</string>
+    <string name="look_panel">看一看</string>
+
+    <string name="unknown">未知</string>
+    <string name="default_time">00</string>
+    <string name="time_split"> : </string>
+    <string name="default_temperature">0</string>
+    <string name="degree">o</string>
+    <string name="yi">宜</string>
+    <string name="ji">忌</string>
+
+    <string name="step_bind">绑定:</string>
+    <string name="skip">关闭</string>
+    <string name="create_qrcode_hint">请在手机上使用微信，扫一扫以下二维码完成配对绑定！</string>
+
+    <!--for audio center-->
+    <string name="audiocenter_name">AudioCenter</string>
+    <string name="music_name">歌曲名字</string>
+    <string name="favoriate">收藏</string>
+    <string name="back">back</string>
+    <string name="recommend_list">推荐</string>
+    <string name="collect_list">收藏</string>
+    <string name="album_list">节目刘表</string>
+    <string name="album">专辑</string>
+
+    <string name="index_music">歌曲</string>
+    <string name="search">搜索</string>
+    <string name="like">喜欢</string>
+    <string name="unlike">不喜欢</string>
+    <string name="singer">歌手</string>
+
+    <string name="play">播放</string>
+    <string name="pause">暂停</string>
+
+    <string name="play_pre">上一节目</string>
+
+    <string name="play_next">下一节目</string>
+    <string name="save_favorite">下一节目</string>
+
+    <string name="play_mode">循环</string>
+    <string name="play_list">节目列表</string>
+    <string name="close">关闭</string>
+    <string name="have_a_listen">听一听</string>
+    <string name="have_a_look">看一看</string>
+
+
+    <string name="cross_talk">相声</string>
+    <string name="stock">股票</string>
+    <string name="health">健康养生</string>
+    <string name="storytelling">听书</string>
+    <string name="history">历史</string>
+    <string name="radio">收音机</string>
+    <string name="music">音乐</string>
+    <string name="china_art">曲艺</string>
+    <string name="my_favoriate">我的最爱</string>
+
+    <string name="net_error">网络异常</string>
+    <string name="none_fav_data">没有收藏</string>
+    <string name="data_error">数据异常</string>
+
+</resources>

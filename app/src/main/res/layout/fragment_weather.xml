@@ -1,0 +1,245 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/background">
+
+    <RelativeLayout
+        android:id="@+id/left_area"
+        android:layout_width="0dip"
+        android:layout_height="match_parent"
+        android:layout_weight="1"
+        android:paddingTop="70px">
+
+        <LinearLayout
+            android:id="@+id/left_layer_1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerHorizontal="true">
+
+            <TextView
+                android:id="@+id/hour"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/default_time"
+                android:textColor="@android:color/white"
+                android:textSize="112px" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:gravity="center_vertical"
+                android:text="@string/time_split"
+                android:textColor="@android:color/white"
+                android:textSize="100px" />
+
+            <TextView
+                android:id="@+id/minute"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/default_time"
+                android:textColor="@android:color/white"
+                android:textSize="112px" />
+        </LinearLayout>
+
+        <TextView
+            android:id="@+id/date"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/left_layer_1"
+            android:gravity="center_horizontal"
+            android:paddingTop="20px"
+            android:text="@string/unknown"
+            android:textColor="@android:color/white" />
+
+        <TextView
+            android:id="@+id/lunar"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/date"
+            android:gravity="center_horizontal"
+            android:paddingTop="10px"
+            android:text="@string/unknown"
+            android:textColor="@android:color/white" />
+
+        <View
+            android:id="@+id/split"
+            android:layout_width="500px"
+            android:layout_height="2px"
+            android:layout_below="@id/lunar"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="20px"
+            android:background="@android:color/white"/>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/split"
+            android:paddingTop="20px">
+
+            <RelativeLayout
+                android:id="@+id/almanac_yi_layer"
+                android:layout_width="0dip"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:gravity="right"
+                android:paddingRight="20dp">
+
+                <TextView
+                    android:id="@+id/almanac_yi_tag"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/yi"
+                    android:textColor="@android:color/white"
+                    android:textSize="70px" />
+
+                <TextView
+                    android:id="@+id/almanac_yi"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@id/almanac_yi_tag"
+                    android:text=""
+                    android:textColor="@android:color/white" />
+            </RelativeLayout>
+
+            <RelativeLayout
+                android:id="@+id/almanac_ji_layer"
+                android:layout_width="0dip"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:gravity="left"
+                android:paddingLeft="20dp">
+
+                <TextView
+                    android:id="@+id/almanac_ji_tag"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/ji"
+                    android:textColor="@android:color/white"
+                    android:textSize="70px" />
+
+                <TextView
+                    android:id="@+id/almanac_ji"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@id/almanac_ji_tag"
+                    android:text=""
+                    android:textColor="@android:color/white" />
+            </RelativeLayout>
+        </LinearLayout>
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:id="@+id/right_area"
+        android:layout_width="0dip"
+        android:layout_height="match_parent"
+        android:layout_weight="1"
+        android:paddingTop="70px">
+
+        <LinearLayout
+            android:id="@+id/right_layer_1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerHorizontal="true">
+
+            <TextView
+                android:id="@+id/temperature"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/default_temperature"
+                android:textColor="@android:color/white"
+                android:textSize="200px" />
+
+            <TextView
+                android:id="@+id/degree"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:gravity="top"
+                android:text="@string/degree"
+                android:textColor="@android:color/white" />
+
+            <ImageView
+                android:id="@+id/weather_img"
+                android:layout_width="60dp"
+                android:layout_height="60dp"
+                android:layout_gravity="center"
+                android:src="@drawable/w_0" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/right_layer_2"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/right_layer_1"
+            android:layout_centerHorizontal="true"
+            android:paddingTop="20px">
+
+            <TextView
+                android:id="@+id/weather_text"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/unknown"
+                android:textColor="@android:color/white"
+                android:textSize="40px" />
+
+            <TextView
+                android:id="@+id/update_time"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:paddingLeft="10dp"
+                android:text="@string/unknown"
+                android:textColor="@android:color/white"
+                android:textSize="25px" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/right_layer_3"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/right_layer_2"
+            android:paddingLeft="100dp"
+            android:paddingTop="40px">
+
+            <ImageView
+                android:id="@+id/humidity_img"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:src="@drawable/humidity" />
+
+            <TextView
+                android:id="@+id/humidity_text"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:paddingLeft="10dp"
+                android:text="@string/unknown"
+                android:textColor="@android:color/white" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/right_layer_4"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/right_layer_3"
+            android:paddingLeft="100dp"
+            android:paddingTop="10px">
+
+            <ImageView
+                android:id="@+id/wind_img"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:src="@drawable/wind" />
+
+            <TextView
+                android:id="@+id/wind_text"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:paddingLeft="10dp"
+                android:text="@string/unknown"
+                android:textColor="@android:color/white" />
+        </LinearLayout>
+    </RelativeLayout>
+</LinearLayout>

@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.design.widget.CoordinatorLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:fresco="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    >
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="horizontal"
+        android:paddingBottom="@dimen/bottom_bar_size">
+
+        <com.facebook.drawee.view.SimpleDraweeView
+            android:id="@+id/playlist_art"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_margin="10dp"
+            android:scaleType="centerCrop"
+            android:src="@drawable/placeholder_disk"
+            fresco:actualImageScaleType="centerCrop"
+            fresco:placeholderImage="@drawable/placeholder_disk"
+            fresco:placeholderImageScaleType="centerCrop"
+            fresco:viewAspectRatio="1"/>
+
+        <FrameLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="vertical">
+
+                <TextView
+                    android:id="@+id/tv_album_title"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="@string/album_list"
+                    android:textSize="@dimen/list_item_text_size_big"/>
+
+                <android.support.v7.widget.RecyclerView
+                    android:id="@+id/rv__albumlist"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:dividerHeight="20dp"
+                    android:scrollbars="vertical"/>
+            </LinearLayout>
+
+            <ProgressBar
+                android:id="@+id/load_progressbar"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal|center_vertical"
+                android:visibility="gone"
+                />
+        </FrameLayout>
+
+    </LinearLayout>
+
+</android.support.design.widget.CoordinatorLayout>

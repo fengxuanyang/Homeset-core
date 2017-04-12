@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/list_item_height"
+                android:layout_marginEnd="@dimen/playlist_item_ends"
+                android:layout_marginStart="@dimen/playlist_item_ends">
+
+    <TextView
+        android:id="@+id/tv_playlist_index"
+        android:layout_width="50dp"
+        android:layout_height="match_parent"
+        android:layout_alignParentStart="true"
+        android:gravity="center_vertical"
+        android:maxLines="1"
+        android:text="100"
+        android:textColor="@color/colorWhite"
+        android:textSize="@dimen/list_item_text_size_big"/>
+
+    <ImageView
+        android:id="@+id/iv_playlist_isfav"
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:layout_alignParentEnd="true"
+        android:src="@drawable/my_unfav"/>
+
+    <TextView
+        android:id="@+id/tv_playlist_category"
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:layout_toStartOf="@id/iv_playlist_isfav"
+        android:gravity="center_vertical"
+        android:paddingEnd="30dp"
+        android:textColor="@color/colorGray"
+        android:textSize="@dimen/list_item_text_size_mid"/>
+
+    <TextView
+        android:id="@+id/tv_playlist_albumname"
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:layout_toEndOf="@id/tv_playlist_index"
+        android:layout_toStartOf="@id/tv_playlist_category"
+        android:ellipsize="end"
+        android:gravity="center_vertical"
+        android:maxLines="1"
+        android:paddingEnd="10dp"
+        android:textColor="@color/colorWhite"
+        android:textSize="@dimen/list_item_text_size_big"/>
+
+</RelativeLayout>

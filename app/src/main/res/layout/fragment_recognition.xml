@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:background="#ffffff">
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="140dip"
+        android:layout_weight="4"
+        android:text="LogMessage"
+        android:id="@+id/textLog"
+        android:scrollbars="vertical"
+        android:singleLine="false"/>
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="140dip"
+        android:layout_marginBottom="16dp"
+        android:layout_marginTop="16dp">
+
+        <LinearLayout
+            android:orientation="horizontal"
+            android:layout_width="match_parent"
+            android:layout_height="70dip">
+
+            <Button
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:text="@string/recognize_start"
+                android:id="@+id/btnStartRecognize"
+                android:layout_width="wrap_content" />
+
+            <Button
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:text="@string/recognize_stop"
+                android:id="@+id/btnStopRecognize"
+                android:layout_width="wrap_content" />
+
+            <Button
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:text="@string/recognize_cancel"
+                android:id="@+id/btnCancelRecognize"
+                android:layout_width="wrap_content" />
+
+        </LinearLayout>
+
+    </RelativeLayout>
+
+
+</LinearLayout>

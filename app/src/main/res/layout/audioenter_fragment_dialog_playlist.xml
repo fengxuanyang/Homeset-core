@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="@color/bottomSheetNormalBackground">
+
+    <TextView
+        android:id="@+id/tv_listname"
+        android:layout_width="wrap_content"
+        android:layout_height="@dimen/list_item_height"
+        android:layout_alignParentTop="true"
+        android:gravity="center_vertical"
+        android:paddingStart="@dimen/playlist_item_ends"
+        android:text="@string/index_music"
+        android:textColor="@color/colorWhite"
+        android:textSize="@dimen/list_item_text_size_big"/>
+
+    <TextView
+        android:id="@+id/tv_close"
+        android:layout_width="wrap_content"
+        android:layout_height="@dimen/list_item_height"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentTop="true"
+        android:gravity="center"
+        android:paddingEnd="@dimen/playlist_item_ends"
+        android:text="@string/close"
+        android:textColor="@color/colorWhite"
+        android:textSize="@dimen/list_item_text_size_big"/>
+
+    <View
+        android:id="@+id/top_border"
+        android:layout_width="fill_parent"
+        android:layout_height="1px"
+        android:layout_below="@id/tv_listname"
+        android:background="@color/border"/>
+
+
+    <android.support.v4.widget.SwipeRefreshLayout
+        android:id="@+id/swiperefresh_playlist"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@id/top_border">
+
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/rv_playlist"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:dividerHeight="20dp"
+            />
+    </android.support.v4.widget.SwipeRefreshLayout>
+</RelativeLayout>

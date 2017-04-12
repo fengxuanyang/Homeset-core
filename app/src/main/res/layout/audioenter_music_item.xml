@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/list_item_height"
+    >
+
+    <TextView
+        android:id="@+id/album_item_index"
+        android:layout_width="30dp"
+        android:layout_height="match_parent"
+        android:gravity="center_vertical"
+        android:text="100"
+        android:textColor="@color/colorTextGray"
+        />
+
+    <TextView
+        android:id="@+id/album_item_name"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_toEndOf="@id/album_item_index"
+        android:gravity="center_vertical"
+        android:textColor="@color/colorTextGray"
+        android:textSize="@dimen/list_item_text_size_mid"/>
+
+    <ImageView
+        android:id="@+id/album_item_fav"
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:layout_alignParentEnd="true"
+        android:layout_gravity="center_vertical"
+        android:layout_marginEnd="10dp"
+        android:src="@drawable/play_icn_love"/>
+</RelativeLayout>
