@@ -249,13 +249,21 @@ public class AudioPlayActivity extends AudioCenterBaseActivity implements MyMedi
                         item.setAudio(radio);
                         playListItems.add(item);
                     }
-                    mCurrentAudioPlayListDetail = new PlayListDetail(currentPlayListType, playListItems);
-                    //for audio play fragment,will get the   playlist detail in fragment
-                    //because the  album playlist it different with the fragment list
-                    // TODO
-                    setCurrentAudio(0);
-                    switchPlayFragment(getAndUpdateAudioPlayFragment(mcurrentAudio), mcurrentAudio.getAudioType() + "");
-                    updatePlayControlFavUI();
+
+                    if (mCurrentAudioPlayListDetail == null) {
+                        mCurrentAudioPlayListDetail = new PlayListDetail(currentPlayListType, playListItems);
+                        //for audio play fragment,will get the   playlist detail in fragment
+                        //because the  album playlist it different with the fragment list
+                        // TODO
+                        setCurrentAudio(0);
+                        switchPlayFragment(getAndUpdateAudioPlayFragment(mcurrentAudio), mcurrentAudio.getAudioType() + "");
+                        updatePlayControlFavUI();
+                    } else {
+                        mCurrentAudioPlayListDetail.addtoList(playListItems);
+                        if (playListFragment != null) {
+                            playListFragment.updateAll();
+                        }
+                    }
                     currentPage++;
                 }
 
@@ -310,7 +318,7 @@ public class AudioPlayActivity extends AudioCenterBaseActivity implements MyMedi
                         //because the  album playlist it different with the fragment list
                         // TODO
                         setCurrentAudio(0);
-                        switchPlayFragment(getAndUpdateAudioPlayFragment(mcurrentAudio), mcurrentAudio.getAudioType() + "");
+                        switchPlayFragment(getAndUpdateAudioPlayFragment(mcurrentAudio), mcurrentAudio.getAudioType()+"");
                         updatePlayControlFavUI();
                     } else {
                         //TODO   partial loading
@@ -369,7 +377,7 @@ public class AudioPlayActivity extends AudioCenterBaseActivity implements MyMedi
                         //because the  album playlist it different with the fragment list
                         // TODO
                         setCurrentAudio(0);
-                        switchPlayFragment(getAndUpdateAudioPlayFragment(mcurrentAudio), mcurrentAudio.getAudioType() + "");
+                        switchPlayFragment(getAndUpdateAudioPlayFragment(mcurrentAudio), mcurrentAudio.getAudioType()+"");
                         updatePlayControlFavUI();
                     } else {
                         mCurrentAudioPlayListDetail.addtoList(playListItems);
@@ -438,7 +446,7 @@ public class AudioPlayActivity extends AudioCenterBaseActivity implements MyMedi
                         PlayListItem<List<MusicVO>> playdetail = new PlayListItem<List<MusicVO>>(Constants.AUDIO_TYPE_MUSIC, currentTag.getCategoryID(), -1l);
                         playdetail.setAudio(filterred);
                         //for audio play fragment end
-                        switchPlayFragment(getAndUpdateAudioPlayFragment(playdetail), playdetail.getAudioType() + "");
+                        switchPlayFragment(getAndUpdateAudioPlayFragment(playdetail), playdetail.getAudioType()+"");
                         updatePlayControlFavUI();
                     } else {
                         for (int i = 0; i < mCurrentAudioPlayListDetail.getPlayItemCount(); i++) {
@@ -574,7 +582,7 @@ public class AudioPlayActivity extends AudioCenterBaseActivity implements MyMedi
             PlayListItem item = new PlayListItem(Constants.AUDIO_TYPE_RADIO, 0, 0L);
             item.setAudio(radio);
             mcurrentAudio = item;
-            switchPlayFragment(getAndUpdateAudioPlayFragment(mcurrentAudio), Constants.AUDIO_TYPE_MUSIC + "");
+            switchPlayFragment(getAndUpdateAudioPlayFragment(mcurrentAudio), Constants.AUDIO_TYPE_MUSIC+"");
             updatePlayControlFavUI();
         } else {
 //            updateAudioType();

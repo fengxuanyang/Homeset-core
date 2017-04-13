@@ -3,6 +3,7 @@ package com.ragentek.homeset.audiocenter.view.fragment;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -42,8 +43,8 @@ public class MusicFragment extends PlayBaseFragment<List<MusicVO>> {
     SimpleDraweeView mSimpleDraweeView;
     @BindView(R.id.rv_album_playlist)
     RecyclerView mRecyclerView;
-    @BindView(R.id.progress_album_load)
-    ProgressBar mProgressBar;
+    @BindView(R.id.swiperefresh_playlist)
+    SwipeRefreshLayout mSwipeRefreshLayout;
 
 
     @Nullable
@@ -109,6 +110,7 @@ public class MusicFragment extends PlayBaseFragment<List<MusicVO>> {
             public void onLoadMore(int currentPage) {
                 PlayListFragment.PlayListListener listListener = (PlayListFragment.PlayListListener) getActivity();
                 listListener.updateListData();
+                mSwipeRefreshLayout.setRefreshing(true);
             }
         });
     }
@@ -126,7 +128,6 @@ public class MusicFragment extends PlayBaseFragment<List<MusicVO>> {
 
     private void loadData() {
         LogUtil.d(TAG, "loadData: ");
-        mProgressBar.setVisibility(View.VISIBLE);
         mTrackListAdapter.setDatas(playdata);
         List<PlayItem> list = new ArrayList<>();
         for (int i = 0; i < playdata.size(); i++) {
@@ -138,6 +139,8 @@ public class MusicFragment extends PlayBaseFragment<List<MusicVO>> {
             list.add(item);
         }
         control.setPlayList(list, currentPlayIndex);
+        mSwipeRefreshLayout.setRefreshing(false);
+
     }
 
 

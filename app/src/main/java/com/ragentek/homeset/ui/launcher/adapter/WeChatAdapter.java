@@ -10,9 +10,10 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.ragentek.homeset.core.R;
 import com.ragentek.homeset.wechat.domain.WeChatInfo;
-import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -59,7 +60,12 @@ public class WeChatAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
 
         if(mData.get(position).getIconUrl() != null && mData.get(position).getIconUrl().length() > 10){
             icon.setImageURI(Uri.parse(mData.get(position).getIconUrl() ));
-            Picasso.with(mContext).load(mData.get(position).getIconUrl()).into(icon);//加载网络图片
+            Glide.with(mContext)
+                 .load(mData.get(position)
+                 .getIconUrl())
+                 .error(R.drawable.contact_default)
+                 .diskCacheStrategy(DiskCacheStrategy.RESULT)
+                  .into(icon);//加载网络图片
         } else {
             icon.setImageResource(R.drawable.contact_default);
         }

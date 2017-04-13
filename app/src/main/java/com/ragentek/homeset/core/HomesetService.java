@@ -16,8 +16,6 @@ public class HomesetService extends Service {
     private static final String TAG = HomesetService.class.getSimpleName();
     private static final boolean DEBUG = true;
 
-
-    
     public static final String ACTION_START = "ragentek.intent.action.HOMESET_START";
     public static final String ACTION_STOP = "ragentek.intent.action.HOMESET_STOP";
     public static final String ACTION_DUMP = "ragentek.intent.action.HOMESET_DUMP";

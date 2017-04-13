@@ -3,6 +3,7 @@ package com.ragentek.homeset.audiocenter.view.fragment;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -54,8 +55,8 @@ public class AlbumFragment extends PlayBaseFragment<AlbumVO> {
     SimpleDraweeView mSimpleDraweeView;
     @BindView(R.id.rv_album_playlist)
     RecyclerView mRecyclerView;
-    @BindView(R.id.progress_album_load)
-    ProgressBar mProgressBar;
+    @BindView(R.id.swiperefresh_playlist)
+    SwipeRefreshLayout mSwipeRefreshLayout;
 
 
     @Override
@@ -115,7 +116,6 @@ public class AlbumFragment extends PlayBaseFragment<AlbumVO> {
         mRecyclerView.addOnScrollListener(new RecycleViewEndlessOnScrollListener() {
             @Override
             public void onLoadMore(int currentPage) {
-
                 updateData();
             }
         });
@@ -133,7 +133,7 @@ public class AlbumFragment extends PlayBaseFragment<AlbumVO> {
 
     private void loadData() {
         LogUtil.d(TAG, "loadData: ");
-        mProgressBar.setVisibility(View.VISIBLE);
+        mSwipeRefreshLayout.setRefreshing(true);
         Subscriber<TrackResultVO> getTagSubscriber = new Subscriber<TrackResultVO>() {
             @Override
             public void onCompleted() {
@@ -149,7 +149,7 @@ public class AlbumFragment extends PlayBaseFragment<AlbumVO> {
             @Override
             public void onNext(TrackResultVO tagResult) {
                 LogUtil.d(TAG, "onNext : " + tagResult);
-
+                mSwipeRefreshLayout.setRefreshing(false);
                 if (tagResult != null) {
                     List<PlayItem> list = new ArrayList<>();
                     if (tagResult.getTracks() != null) {
@@ -176,7 +176,7 @@ public class AlbumFragment extends PlayBaseFragment<AlbumVO> {
 
     private void updateData() {
         LogUtil.d(TAG, "updateData: ");
-        mProgressBar.setVisibility(View.VISIBLE);
+        mSwipeRefreshLayout.setRefreshing(true);
         Subscriber<TrackResultVO> tagSubscriber = new Subscriber<TrackResultVO>() {
             @Override
             public void onCompleted() {
@@ -189,6 +189,7 @@ public class AlbumFragment extends PlayBaseFragment<AlbumVO> {
 
             @Override
             public void onNext(TrackResultVO tagResult) {
+                mSwipeRefreshLayout.setRefreshing(false);
                 if (tagResult != null) {
                     List<PlayItem> list = new ArrayList<>();
                     if (tagResult.getTracks() != null) {
