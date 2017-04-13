@@ -22,7 +22,7 @@ import java.util.List;
  * Created by wenjin.wang on 2017/3/30.
  */
 
-public class WeChatAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> implements View.OnClickListener, View.OnLongClickListener{
+public class WeChatAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> implements View.OnClickListener, View.OnLongClickListener {
     private static final String TAG = "WeChatAdapter";
 
     private Context mContext;
@@ -33,6 +33,7 @@ public class WeChatAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
     //自定义监听事件
     public static interface OnRecyclerViewItemClickListener {
         void onItemClick(View view);
+
         void onItemLongClick(View view);
     }
 
@@ -54,30 +55,29 @@ public class WeChatAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
 
     @Override
     public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
-        ItemViewHolder item = (ItemViewHolder)holder;
+        ItemViewHolder item = (ItemViewHolder) holder;
         ImageView icon = item.getIcon();
         TextView name = item.getName();
 
-        if(mData.get(position).getIconUrl() != null && mData.get(position).getIconUrl().length() > 10){
-            icon.setImageURI(Uri.parse(mData.get(position).getIconUrl() ));
+        if (mData.get(position).getIconUrl() != null && mData.get(position).getIconUrl().length() > 10) {
+            icon.setImageURI(Uri.parse(mData.get(position).getIconUrl()));
             Glide.with(mContext)
-                 .load(mData.get(position)
-                 .getIconUrl())
-                 .error(R.drawable.contact_default)
-                 .diskCacheStrategy(DiskCacheStrategy.RESULT)
-                  .into(icon);//加载网络图片
+                    .load(mData.get(position).getIconUrl())
+                    .error(R.drawable.contact_default)
+                    .diskCacheStrategy(DiskCacheStrategy.RESULT)
+                    .into(icon);//加载网络图片
         } else {
             icon.setImageResource(R.drawable.contact_default);
         }
 
-        Log.d(TAG, "mData.get(position):"+mData.get(position).toString());
-        if(mData.get(position).getConRemark() != null && mData.get(position).getConRemark().length() > 0 ) {
+        Log.d(TAG, "mData.get(position):" + mData.get(position).toString());
+        if (mData.get(position).getConRemark() != null && mData.get(position).getConRemark().length() > 0) {
             name.setText(mData.get(position).getConRemark());
-        }else if(mData.get(position).getNickName() != null && mData.get(position).getNickName().length() > 0){
+        } else if (mData.get(position).getNickName() != null && mData.get(position).getNickName().length() > 0) {
             name.setText(mData.get(position).getNickName());
-        }else if(mData.get(position).getAlias() != null && mData.get(position).getAlias().length() > 0){
+        } else if (mData.get(position).getAlias() != null && mData.get(position).getAlias().length() > 0) {
             name.setText(mData.get(position).getAlias());
-        }else{
+        } else {
             name.setText(mData.get(position).getUserName());
         }
         item.setUserName(mData.get(position).getUserName());
@@ -97,7 +97,7 @@ public class WeChatAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
 
     @Override
     public boolean onLongClick(View v) {
-        if (mOnItemClickListener!= null) {
+        if (mOnItemClickListener != null) {
             mOnItemClickListener.onItemLongClick(v);
         }
         return false;
@@ -108,7 +108,7 @@ public class WeChatAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
     }
 
     public void setData(List<WeChatInfo> mData) {
-        if(mData != null) {
+        if (mData != null) {
             this.mData.clear();
             this.mData.addAll(mData);
         }
@@ -128,7 +128,7 @@ public class WeChatAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
 
         public ItemViewHolder(View view) {
             super(view);
-            icon = (ImageView)view.findViewById(R.id.iv_conact);
+            icon = (ImageView) view.findViewById(R.id.iv_conact);
             name = (TextView) view.findViewById(R.id.tv_conact_name);
         }
 
