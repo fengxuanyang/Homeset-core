@@ -1,8 +1,8 @@
 package com.ragentek.homeset.audiocenter.service;
 
 import android.content.Context;
+import android.util.Log;
 
-import com.ragentek.homeset.audiocenter.model.bean.PlayListDetail;
 import com.ragentek.homeset.audiocenter.model.bean.PlayListItem;
 import com.ragentek.homeset.audiocenter.model.bean.TagDetail;
 import com.ragentek.homeset.audiocenter.net.AudioCenterHttpManager;
@@ -16,7 +16,6 @@ import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.List;
 
-import io.netty.handler.codec.compression.FastLzFrameDecoder;
 import rx.Subscriber;
 
 import static com.ragentek.homeset.audiocenter.view.fragment.AlbumFragment.PAGE_COUNT;
@@ -36,10 +35,12 @@ public class PlayListManager {
 
     private TagDetail currenTag;
 
-    public static final int PLAYLISTMANAGER_RESULT_NETERROR = -1;
+    public static final int PLAYLISTMANAGER_RESULT_ERROR_NET = -1;
+    public static final int PLAYLISTMANAGER_RESULT_ERROR_NONTINIT = -2;
+
     public static final int PLAYLISTMANAGER_RESULT_SUCCESS = 0;
     public static final int PLAYLISTMANAGER_RESULT_NONE = 1;
-    private boolean isInit = false;
+    private boolean isInitted = false;
     private PlayListManagerListener mPlayListManagerListener;
     private int currentPage;
 
@@ -58,17 +59,56 @@ public class PlayListManager {
         return mPlayListManager;
     }
 
-    private void initPlayList(TagDetail tagDetail, PlayListManagerListener anagerListener) {
+    public void initPlayList(TagDetail tagDetail, PlayListManagerListener anagerListener) {
+        isInitted = false;
         mPlayListManagerListener = anagerListener;
+    }
 
+
+    public void loadMore() {
+        if (!isInitted) {
+            Log.e(TAG, "loadMore: error PlayListManager not init");
+            return;
+        } else {
+            updateAudioData(currenTag);
+        }
+    }
+
+
+    //TODO now
+    /**
+     * @param item
+     */
+    public void updateItemFav(PlayListItem item) {
+        if (!isInitted) {
+            Log.e(TAG, "loadMore: error PlayListManager not init");
+            return;
+        } else {
+            PlayListItem listItem = getIndexFromID(item.getId().longValue());
+            if (listItem != null) {
+                listItem.updateFav();
+            }
+
+
+        }
+    }
+
+    private PlayListItem getIndexFromID(long id) {
+        for (PlayListItem item : wholePlayList) {
+            if (item.getId().longValue() == id) {
+                return item;
+            }
+        }
+        return null;
     }
 
     public TagDetail getCurrenTag() {
         return currenTag;
     }
 
+
     private boolean isInitialize() {
-        return false;
+        return isInitted;
     }
 
 
@@ -88,15 +128,15 @@ public class PlayListManager {
                 break;
             case Category.ID.RADIO:
                 currentPlayListType = Constants.PLAYLIST_RADIO;
-                getTAGRadio(tagDetail);
+//                getTAGRadio(tagDetail);
                 break;
             case Category.ID.MUSIC:
                 currentPlayListType = Constants.PLAYLIST_MUSIC;
-                getTAGMusics(tagDetail);
+//                getTAGMusics(tagDetail);
                 break;
             case Constants.CATEGORY_FAV:
                 currentPlayListType = Constants.PLAYLIST_FAV;
-                getFav(tagDetail);
+//                getFav(tagDetail);
                 break;
         }
     }
@@ -107,6 +147,7 @@ public class PlayListManager {
             @Override
             public void onCompleted() {
                 LogUtil.d(TAG, "onCompleted: ");
+                isInitted = true;
             }
 
             @Override
@@ -118,7 +159,7 @@ public class PlayListManager {
             public void onNext(AlbumResultVO tagResult) {
 
                 if (tagResult == null) {
-                    requestPlayDataComplete(PLAYLISTMANAGER_RESULT_NETERROR, null);
+                    requestPlayDataComplete(PLAYLISTMANAGER_RESULT_ERROR_NET, null);
                 } else if (tagResult.getAlbums() == null) {
                     requestPlayDataComplete(PLAYLISTMANAGER_RESULT_NONE, null);
                 } else {
@@ -134,6 +175,7 @@ public class PlayListManager {
                         item.setAudio(album);
                         playListItems.add(item);
                     }
+                    requestPlayDataComplete(PLAYLISTMANAGER_RESULT_SUCCESS, playListItems);
                 }
             }
 
@@ -142,8 +184,38 @@ public class PlayListManager {
     }
 
 
+    private void updateFav(int index) {
+        LogUtil.d(TAG, "setFav ");
+        final PlayListItem playitem = wholePlayList.get(index);
+        Subscriber<String> mSetFavSubscriber = new Subscriber<String>() {
+            @Override
+            public void onCompleted() {
+                LogUtil.d(TAG, "onNext onCompleted: ");
+            }
+
+            @Override
+            public void onError(Throwable e) {
+                LogUtil.e(TAG, "onNext result: " + e.getMessage());
+            }
+
+            @Override
+            public void onNext(String result) {
+                LogUtil.d(TAG, "onNext result: " + result);
+                playitem.updateFav();
+            }
+        };
+        LogUtil.d(TAG, "setFav  : " + playitem.getId());
+
+        if (playitem.getFav() == Constants.UNFAV) {
+            AudioCenterHttpManager.getInstance(mContext.get()).addFavorite(mSetFavSubscriber, playitem.getId(), playitem.getCategoryType(), playitem.getGroup());
+        } else {
+            AudioCenterHttpManager.getInstance(mContext.get()).removeFavorite(mSetFavSubscriber, playitem.getId(), playitem.getCategoryType(), playitem.getGroup());
+
+        }
+    }
+
     private void requestPlayDataComplete(int resultCode, List<PlayListItem> resultmessage) {
-        if (!isInit) {
+        if (!isInitted) {
             mPlayListManagerListener.initComplete(resultCode, resultmessage);
         } else {
             mPlayListManagerListener.loadMoreComplete(resultCode, resultmessage);
