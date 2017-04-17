@@ -14,9 +14,9 @@ import com.ragentek.protocol.constants.CategoryEnum;
  * Created by xuanyang.feng on 2017/3/7.
  */
 
-public class Utils {
+public class AudioCenterUtils {
 
-    private static final String TAG = "Utils";
+    private static final String TAG = "AudioCenterUtils";
 
     private static final int ONE_MIN = 1 * 60 * 1000;
 
