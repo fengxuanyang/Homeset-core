@@ -6,6 +6,7 @@ import android.widget.ImageView;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.GlideBuilder;
+import com.bumptech.glide.RequestManager;
 import com.bumptech.glide.load.engine.bitmap_recycle.LruBitmapPool;
 import com.bumptech.glide.load.engine.cache.InternalCacheDiskCacheFactory;
 import com.bumptech.glide.load.engine.cache.LruResourceCache;
@@ -29,9 +30,12 @@ public class ImageLoaderUtil {
     private Context mContext;
     private static ImageLoaderUtil mImageLoaderManager;
     private GlideRequestListener mGlideRequestListener = new GlideRequestListener();
+    private RequestManager mRequestManager;
 
     private ImageLoaderUtil(Context context) {
         mContext = context;
+        mRequestManager = Glide.with(mContext);
+
     }
 
 
@@ -47,8 +51,7 @@ public class ImageLoaderUtil {
     }
 
     public void displayImage(ImageView imageView, Uri path, int defaultresuorceid, int errorid) {
-        Glide.with(mContext)
-                .load(path)
+        mRequestManager.load(path)
                 .placeholder(defaultresuorceid)
                 .error(errorid)
                 .listener(mGlideRequestListener)
@@ -57,16 +60,14 @@ public class ImageLoaderUtil {
     }
 
     public void displayImage(ImageView imageView, Uri path, int errorid) {
-        Glide.with(mContext)
-                .load(path)
+        mRequestManager.load(path)
                 .error(errorid)
                 .listener(mGlideRequestListener)
                 .into(imageView);
     }
 
     public void displayImage(ImageView imageView, Uri path) {
-        Glide.with(mContext)
-                .load(path)
+        mRequestManager.load(path)
                 .listener(mGlideRequestListener)
                 .into(imageView);
     }
