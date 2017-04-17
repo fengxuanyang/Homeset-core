@@ -28,7 +28,7 @@ public abstract class BasePlayListManager {
     PlayListManagerListener mPlayListManagerListener;
     boolean isInitted = false;
 
-    void BasePlayListManager(TagDetail tag, Context context) {
+    public BasePlayListManager(TagDetail tag, Context context) {
         mTagDetail = tag;
         mContext = context;
     }
@@ -75,6 +75,21 @@ public abstract class BasePlayListManager {
         }
         LogUtil.e(TAG, " getIndexFromID    , error  do not contain: " + audioid);
         return null;
+    }
+
+    void requestPlayDataComplete(int resultCode, List<PlayListItem> resultmessage) {
+        if (!isInitted) {
+            mPlayListManagerListener.initComplete(resultCode, resultmessage);
+            if (resultCode == PLAYLISTMANAGER_RESULT_SUCCESS) {
+                wholePlayList = resultmessage;
+                isInitted = true;
+            }
+        } else {
+            mPlayListManagerListener.loadMoreComplete(resultCode, resultmessage);
+            if (resultCode == PLAYLISTMANAGER_RESULT_SUCCESS) {
+                wholePlayList.addAll(resultmessage);
+            }
+        }
     }
 
     abstract void loadMore();

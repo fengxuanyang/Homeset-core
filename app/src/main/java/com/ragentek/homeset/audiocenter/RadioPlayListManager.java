@@ -8,14 +8,9 @@ import com.ragentek.homeset.audiocenter.net.AudioCenterHttpManager;
 import com.ragentek.homeset.audiocenter.utils.AudioCenterUtils;
 import com.ragentek.homeset.audiocenter.utils.Constants;
 import com.ragentek.homeset.audiocenter.utils.LogUtil;
-import com.ragentek.protocol.commons.audio.AlbumVO;
-import com.ragentek.protocol.commons.audio.FavoriteVO;
-import com.ragentek.protocol.commons.audio.MusicVO;
 import com.ragentek.protocol.commons.audio.RadioVO;
-import com.ragentek.protocol.constants.Category;
-import com.ragentek.protocol.constants.CategoryEnum;
 import com.ragentek.protocol.messages.http.audio.FavoriteResultVO;
-import com.ragentek.protocol.messages.http.audio.MusicResultVO;
+import com.ragentek.protocol.messages.http.audio.RadioResultVO;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -28,23 +23,23 @@ import static com.ragentek.homeset.audiocenter.view.fragment.AlbumFragment.PAGE_
  * Created by xuanyang.feng on 2017/4/17.
  */
 
-public class FavPlayListManager extends BasePlayListManager {
-    private static final String TAG = "FavPlayListManager";
+public class RadioPlayListManager extends BasePlayListManager {
+    private static final String TAG = "RadioPlayListManager";
 
-    public FavPlayListManager(TagDetail tag, Context context) {
+    public RadioPlayListManager(TagDetail tag, Context context) {
         super(tag, context);
     }
 
     @Override
     public void init(PlayListManagerListener playListManagerListener) {
-        getTAGFav();
+        getTAGRadio();
         super.init(playListManagerListener);
     }
 
     @Override
     public void loadMore() {
         if (isInitted) {
-            getTAGFav();
+            getTAGRadio();
             return;
         }
         LogUtil.e(TAG, "loadMore error not init isInitted: " + isInitted);
@@ -55,9 +50,9 @@ public class FavPlayListManager extends BasePlayListManager {
         LogUtil.d(TAG, "update2Server  ID: " + item.getId());
     }
 
-    private void getTAGFav() {
+    private void getTAGRadio() {
         LogUtil.d(TAG, "getTAGFav: " + mTagDetail.getCategoryID() + ":getName" + mTagDetail.getName());
-        Subscriber<FavoriteResultVO> mloadDataSubscriber = new Subscriber<FavoriteResultVO>() {
+        Subscriber<RadioResultVO> mloadDataSubscriber = new Subscriber<RadioResultVO>() {
             @Override
             public void onCompleted() {
                 LogUtil.d(TAG, "getTAGFav onCompleted: ");
@@ -71,26 +66,32 @@ public class FavPlayListManager extends BasePlayListManager {
             }
 
             @Override
-            public void onNext(FavoriteResultVO tagResult) {
+            public void onNext(RadioResultVO tagResult) {
                 if (tagResult == null) {
                     requestPlayDataComplete(PLAYLISTMANAGER_RESULT_ERROR_NET, null);
-                } else if (tagResult.getFavorites() == null) {
+                } else if (tagResult.getRadios() == null) {
                     requestPlayDataComplete(PLAYLISTMANAGER_RESULT_NONE, null);
                 } else {
                     currentPage++;
                     List<PlayListItem> playListItems = new ArrayList<PlayListItem>();
-
-                    int totalSize = tagResult.getFavorites().size();
+                    for (RadioVO radio : tagResult.getRadios()) {
+                        PlayListItem item = new PlayListItem(Constants.AUDIO_TYPE_RADIO, mTagDetail.getCategoryID(), radio.getId());
+                        LogUtil.d(TAG, "fav:" + radio.getFavorite());
+                        item.setFav(radio.getFavorite());
+                        item.setGroup(Constants.GROUP_RADIO);
+                        item.setAudio(radio);
+                        playListItems.add(item);
+                    }
+                    int totalSize = tagResult.getRadios().size();
                     LogUtil.d(TAG, "totalSize: " + totalSize);
                     // new add fav is on the top
-                    for (int i = totalSize - 1; i > -1; i--) {
-                        playListItems.add(AudioCenterUtils.decoratorFavoriteVO(tagResult.getFavorites().get(i)));
-                    }
+
                     requestPlayDataComplete(PLAYLISTMANAGER_RESULT_SUCCESS, playListItems);
                 }
             }
         };
-        AudioCenterHttpManager.getInstance(mContext).getFavorites(mloadDataSubscriber, currentPage, PAGE_COUNT);
+        AudioCenterHttpManager.getInstance(mContext).getRadiosByTAG(mloadDataSubscriber, mTagDetail.getRadioType(), mTagDetail.getProvince(), currentPage, PAGE_COUNT);
+
     }
 
 

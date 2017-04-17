@@ -21,6 +21,7 @@ import com.ragentek.homeset.audiocenter.model.bean.TagDetail;
 import com.ragentek.homeset.audiocenter.net.AudioCenterHttpManager;
 import com.ragentek.homeset.audiocenter.service.MediaPlayerManager;
 import com.ragentek.homeset.audiocenter.service.MyMediaPlayerControl;
+import com.ragentek.homeset.audiocenter.utils.AudioCenterUtils;
 import com.ragentek.homeset.audiocenter.utils.Constants;
 import com.ragentek.homeset.audiocenter.utils.LogUtil;
 import com.ragentek.homeset.audiocenter.utils.Utils;
@@ -81,7 +82,9 @@ public class AudioPlayActivityV2 extends AudioCenterBaseActivity implements MyMe
     //for media player
     private MediaPlayerManager.MediaPlayerHandler mediaPlayerHandler;
 
+    private BasePlayListManager mPlayListManager;
 
+    private PlayListListener mPlayListListener = new PlayListListener();
     //    private MyMediaListener mediaListener;
     private boolean needUpdatePlayProgress = true;
     private final String PERCENTAGE = "percentage";
@@ -181,7 +184,6 @@ public class AudioPlayActivityV2 extends AudioCenterBaseActivity implements MyMe
         LogUtil.d(TAG, "updateAudioData ::" + mTagDetail.getName());
 
         switch (mTagDetail.getCategoryID()) {
-            //TODO is the same ui ?
             case Category.ID.CROSS_TALK:
             case Category.ID.CHINA_ART:
             case Category.ID.HEALTH:
@@ -189,23 +191,24 @@ public class AudioPlayActivityV2 extends AudioCenterBaseActivity implements MyMe
             case Category.ID.STOCK:
             case Category.ID.HISTORY:
                 currentPlayListType = Constants.PLAYLIST_ALBUM;
-                getTAGAlbums(mTagDetail);
+                mPlayListManager = new AlbumPlayListManager(mTagDetail, this);
                 break;
             case Category.ID.RADIO:
-                getTAGRadio(mTagDetail);
+                mPlayListManager = new RadioPlayListManager(mTagDetail, this);
                 currentPlayListType = Constants.PLAYLIST_RADIO;
                 break;
             case Category.ID.MUSIC:
                 currentPlayListType = Constants.PLAYLIST_MUSIC;
-                getTAGMusics(mTagDetail);
+                mPlayListManager = new MusicPlayListManager(mTagDetail, this);
                 break;
             case Constants.CATEGORY_FAV:
                 currentPlayListType = Constants.PLAYLIST_MUSIC;
                 currentPlayListType = Constants.PLAYLIST_FAV;
-                getFav();
+                mPlayListManager = new FavPlayListManager(mTagDetail, this);
                 break;
         }
         audioName.setText(mTagDetail.getName());
+        mPlayListManager.init(mPlayListListener);
     }
 
     private TagDetail getTagDetail() {
@@ -217,319 +220,6 @@ public class AudioPlayActivityV2 extends AudioCenterBaseActivity implements MyMe
             currentTag = (TagDetail) bundle.getSerializable(Constants.CATEGORY_TAG);
         }
         return currentTag;
-    }
-
-    //TODO
-    private void getTAGRadio(final TagDetail currentTag) {
-        LogUtil.d(TAG, "getTAGRadio: ");
-        LogUtil.d(TAG, "getTAGRadio: " + currentTag.getCategoryID() + ":getName" + currentTag.getName());
-        Subscriber<RadioResultVO> mloadDataSubscriber = new Subscriber<RadioResultVO>() {
-            @Override
-            public void onCompleted() {
-                LogUtil.d(TAG, "onCompleted: ");
-            }
-
-            @Override
-            public void onError(Throwable e) {
-                LogUtil.e(TAG, "onError: " + e.getMessage());
-            }
-
-            @Override
-            public void onNext(RadioResultVO tagResult) {
-                if (tagResult != null) {
-                    //for audio playlist  start
-                    List<PlayListItem> playListItems = new ArrayList<>();
-
-                    for (RadioVO radio : tagResult.getRadios()) {
-                        PlayListItem item = new PlayListItem(Constants.AUDIO_TYPE_RADIO, currentTag.getCategoryID(), radio.getId());
-                        LogUtil.d(TAG, "fav:" + radio.getFavorite());
-                        item.setFav(radio.getFavorite());
-                        item.setGroup(Constants.GROUP_RADIO);
-                        item.setAudio(radio);
-                        playListItems.add(item);
-                    }
-
-                    if (mCurrentAudioPlayListDetail == null) {
-                        mCurrentAudioPlayListDetail = new PlayListDetail(currentPlayListType, playListItems);
-                        //for audio play fragment,will get the   playlist detail in fragment
-                        //because the  album playlist it different with the fragment list
-                        // TODO
-                        setCurrentAudio(0);
-                        switchPlayFragment(getAndUpdateAudioPlayFragment(mcurrentAudio), mcurrentAudio.getAudioType() + "");
-                        updatePlayControlFavUI();
-                    } else {
-                        mCurrentAudioPlayListDetail.addtoList(playListItems);
-                        if (playListFragment != null) {
-                            playListFragment.updateAll();
-                        }
-                    }
-                    currentPage++;
-                }
-
-            }
-
-        };
-        AudioCenterHttpManager.getInstance(this).getRadiosByTAG(mloadDataSubscriber, currentTag.getRadioType(), currentTag.getProvince(), currentPage, PAGE_COUNT);
-    }
-
-
-    private void getFav() {
-        LogUtil.d(TAG, "getFav: ");
-        Subscriber<FavoriteResultVO> mloadDataSubscriber = new Subscriber<FavoriteResultVO>() {
-            @Override
-            public void onCompleted() {
-                LogUtil.d(TAG, "onCompleted: ");
-            }
-
-            @Override
-            public void onError(Throwable e) {
-                LogUtil.e(TAG, "onError: " + e.getMessage());
-            }
-
-            @Override
-            public void onNext(FavoriteResultVO tagResult) {
-
-                if (tagResult == null && mCurrentAudioPlayListDetail == null) {
-                    LogUtil.e(TAG, "getFav tagResult == null ");
-
-                    switchPlayFragment(getStateFragment(PlayStateFragment.PLAYSTATE.NETERROR), STATEFRAGMENTTAG);
-
-                } else if (tagResult.getFavorites().size() < 1 && mCurrentAudioPlayListDetail == null) {
-                    LogUtil.e(TAG, "getFav getFavorites is null ");
-                    switchPlayFragment(getStateFragment(PlayStateFragment.PLAYSTATE.DATANULL), STATEFRAGMENTTAG);
-
-                } else {
-                    //    public PlayListItem(int audioType, int categoryType, Long id) {
-
-                    //group=0 music，group=1 album，group=2 radio
-                    //map the fav and the radio ,album or music
-                    List<PlayListItem> playListItems = new ArrayList<>();
-
-                    int totalSize = tagResult.getFavorites().size();
-                    LogUtil.d(TAG, "totalSize: " + totalSize);
-
-                    for (int i = totalSize - 1; i > -1; i--) {
-                        playListItems.add(decoratorFavoriteVO(tagResult.getFavorites().get(i)));
-                    }
-                    if (mCurrentAudioPlayListDetail == null) {
-                        mCurrentAudioPlayListDetail = new PlayListDetail(currentPlayListType, playListItems);
-                        //for audio play fragment,will get the   playlist detail in fragment
-                        //because the  album playlist it different with the fragment list
-                        // TODO
-                        setCurrentAudio(0);
-                        switchPlayFragment(getAndUpdateAudioPlayFragment(mcurrentAudio), mcurrentAudio.getAudioType() + "");
-                        updatePlayControlFavUI();
-                    } else {
-                        //TODO   partial loading
-                        //update the play list  data
-                        mCurrentAudioPlayListDetail.addtoList(playListItems);
-                        //  update the playfragment
-                        if (playListFragment != null) {
-                            playListFragment.updateAll();
-                        }
-                    }
-
-                }
-            }
-
-        };
-        AudioCenterHttpManager.getInstance(this).getFavorites(mloadDataSubscriber, currentPage, PAGE_COUNT);
-        currentPage++;
-
-
-    }
-
-    private void getTAGAlbums(final TagDetail currentTag) {
-        LogUtil.d(TAG, "getAlbums: " + currentTag.getCategoryID() + ":getName" + currentTag.getName());
-        Subscriber<AlbumResultVO> mloadDataSubscriber = new Subscriber<AlbumResultVO>() {
-            @Override
-            public void onCompleted() {
-                LogUtil.d(TAG, "onCompleted: ");
-            }
-
-            @Override
-            public void onError(Throwable e) {
-                LogUtil.e(TAG, "onError: " + e.getMessage());
-            }
-
-            @Override
-            public void onNext(AlbumResultVO tagResult) {
-                if (tagResult != null) {
-
-                    currentPage++;
-
-                    //for audio playlist  start
-                    List<PlayListItem> playListItems = new ArrayList<>();
-                    for (AlbumVO album : tagResult.getAlbums()) {
-                        PlayListItem item = new PlayListItem(Constants.AUDIO_TYPE_ALBUM, currentTag.getCategoryID(), album.getId());
-                        LogUtil.d(TAG, "fav:" + album.getFavorite());
-                        LogUtil.d(TAG, album.getTitle());
-
-                        item.setFav(album.getFavorite());
-                        item.setGroup(Constants.GROUP_ALBUM);
-                        item.setAudio(album);
-                        playListItems.add(item);
-                    }
-                    if (mCurrentAudioPlayListDetail == null) {
-                        mCurrentAudioPlayListDetail = new PlayListDetail(currentPlayListType, playListItems);
-                        //for audio play fragment,will get the   playlist detail in fragment
-                        //because the  album playlist it different with the fragment list
-                        // TODO
-                        setCurrentAudio(0);
-                        switchPlayFragment(getAndUpdateAudioPlayFragment(mcurrentAudio), mcurrentAudio.getAudioType() + "");
-                        updatePlayControlFavUI();
-                    } else {
-                        mCurrentAudioPlayListDetail.addtoList(playListItems);
-                        if (playListFragment != null) {
-                            playListFragment.updateAll();
-                        }
-                    }
-
-                }
-            }
-
-        };
-        AudioCenterHttpManager.getInstance(this).getAlbums(mloadDataSubscriber, currentTag.getCategoryID(), currentTag.getName() == null ? Constants.DEFULT_CROSS_TALK : currentTag.getName(), currentPage, PAGE_COUNT);
-    }
-
-    /**
-     * the palylist also need the data,  must load the fragment(playtitem) data int the activity
-     *
-     * @param currentTag currentTag
-     */
-    private void getTAGMusics(final TagDetail currentTag) {
-        LogUtil.d(TAG, "getTAGMusics: " + currentTag.getCategoryID() + ":getName" + currentTag.getName());
-        Subscriber<MusicResultVO> mloadDataSubscriber = new Subscriber<MusicResultVO>() {
-            @Override
-            public void onCompleted() {
-                LogUtil.d(TAG, "getTAGMusics onCompleted: ");
-                currentPage++;
-            }
-
-            @Override
-            public void onError(Throwable e) {
-                LogUtil.e(TAG, "getTAGMusics onError: " + e.getMessage());
-
-            }
-
-            @Override
-            public void onNext(MusicResultVO tagResult) {
-                if (tagResult != null) {
-                    currentPage++;
-                    //for audio playlist  start
-                    List<PlayListItem> playListItems = new ArrayList<PlayListItem>();
-                    //filterred is used for musicplayfragment
-                    List<MusicVO> filterred = new ArrayList<>();
-
-                    for (int i = 0; i < tagResult.getMusics().size(); i++) {
-                        MusicVO music = tagResult.getMusics().get(i);
-                        if (music != null && music.getSong_name() != null) {
-                            LogUtil.d(TAG, "getTAGMusics :" + music.getSong_name());
-                            LogUtil.d(TAG, "getCover_url :" + music.getCover_url());
-                            PlayListItem item = new PlayListItem(Constants.AUDIO_TYPE_MUSIC, currentTag.getCategoryID(), music.getId());
-                            item.setAudio(music);
-                            item.setFav(music.getFavorite());
-                            item.setGroup(Constants.GROUP_MUSIC);
-                            playListItems.add(item);
-                            filterred.add(music);
-                            LogUtil.d(TAG, "setPlayList :i:" + i + "" + music.getSong_name() + "" + music.getPlay_url());
-
-                        }
-                    }
-
-                    if (mCurrentAudioPlayListDetail == null) {
-                        mCurrentAudioPlayListDetail = new PlayListDetail(currentPlayListType, playListItems);
-                        setCurrentAudio(0);
-                        // TODO
-                        //for audio play fragment   , the list of play fragment  is same with the palylist  ,use the id  of -1 means none
-                        PlayListItem<List<MusicVO>> playdetail = new PlayListItem<List<MusicVO>>(Constants.AUDIO_TYPE_MUSIC, currentTag.getCategoryID(), -1l);
-                        playdetail.setAudio(filterred);
-                        //for audio play fragment end
-                        switchPlayFragment(getAndUpdateAudioPlayFragment(playdetail), playdetail.getAudioType() + "");
-                        updatePlayControlFavUI();
-                    } else {
-                        for (int i = 0; i < mCurrentAudioPlayListDetail.getPlayItemCount(); i++) {
-                            //insert the old list to the front
-                            filterred.add(i, (MusicVO) mCurrentAudioPlayListDetail.getPlayItem(i).getAudio());
-                        }
-                        mCurrentAudioPlayListDetail.addtoList(playListItems);
-                        //for audio play fragment   , the list of play fragment  is same with the palylist  ,use the id  of -1 means none
-                        PlayListItem<List<MusicVO>> playdetail = new PlayListItem<List<MusicVO>>(Constants.AUDIO_TYPE_MUSIC, currentTag.getCategoryID(), -1l);
-                        playdetail.setAudio(filterred);
-                        getAndUpdateAudioPlayFragment(playdetail);
-                        if (playListFragment != null) {
-                            playListFragment.updateAll();
-                        }
-                    }
-                }
-            }
-
-        };
-        AudioCenterHttpManager.getInstance(this).getMusics(mloadDataSubscriber, currentTag.getName(), currentPage, PAGE_COUNT);
-    }
-
-
-    private PlayListItem decoratorFavoriteVO(FavoriteVO fav) {
-        PlayListItem playlistitem = null;
-        LogUtil.d(TAG, "decoratorFavoriteVO  getId: " + fav.getId() + ",getAudio_id:" + fav.getAudio_id());
-        switch (fav.getGroup()) {
-            case Category.GROUP.MUSIC_GROUP:
-                playlistitem = new PlayListItem(Constants.AUDIO_TYPE_SINGLE_MUSIC, getCategoryIdFromName(fav.getCategory_name()), fav.getAudio_id());
-                playlistitem.setFav(Constants.FAV);
-                playlistitem.setGroup(fav.getGroup());
-                MusicVO music = new MusicVO();
-                music.setPlay_url(fav.getPlay_url());
-                music.setId(fav.getAudio_id());
-                music.setSinger_name(fav.getAnnouncer());
-                music.setSong_name(fav.getTitle());
-                music.setAlbum_name(fav.getAnnouncer());
-                music.setCover_url(fav.getCover_url());
-                music.setCategory_id(getCategoryIdFromName(fav.getCategory_name()));
-                playlistitem.setAudio(music);
-                break;
-            case Category.GROUP.OTHER_GOUP:
-                playlistitem = new PlayListItem(Constants.AUDIO_TYPE_ALBUM, getCategoryIdFromName(fav.getCategory_name()), fav.getAudio_id());
-                playlistitem.setFav(Constants.FAV);
-                playlistitem.setGroup(fav.getGroup());
-                AlbumVO album = new AlbumVO();
-                album.setId(fav.getAudio_id());
-                album.setTitle(fav.getTitle());
-                album.setCover_url(fav.getCover_url());
-                album.setCategory_id(getCategoryIdFromName(fav.getCategory_name()));
-                playlistitem.setAudio(album);
-                break;
-            case Category.GROUP.RADIO_GROUP:
-                playlistitem = new PlayListItem(Constants.AUDIO_TYPE_RADIO, getCategoryIdFromName(fav.getCategory_name()), fav.getAudio_id());
-                playlistitem.setFav(Constants.FAV);
-                playlistitem.setGroup(fav.getGroup());
-                RadioVO radio = new RadioVO();
-                radio.setPlay_url(fav.getPlay_url());
-                radio.setId(fav.getAudio_id());
-                radio.setName(fav.getTitle());
-                radio.setDesc(fav.getAnnouncer());
-                radio.setCover_url(fav.getCover_url());
-                radio.setCategory_id(getCategoryIdFromName(fav.getCategory_name()));
-                playlistitem.setAudio(radio);
-                break;
-            default:
-                LogUtil.e(TAG, " error  group type not supported" + fav.getGroup());
-
-        }
-        return playlistitem;
-    }
-
-
-    private int getCategoryIdFromName(String name) {
-        LogUtil.d(TAG, "name:" + name);
-        int id = CategoryEnum.MUSIC.getId();
-        for (CategoryEnum em : CategoryEnum.values()) {
-            if (em.getName().equals(name)) {
-                id = em.getId();
-            }
-        }
-        LogUtil.d(TAG, "id:" + id);
-
-        return id;
     }
 
 
@@ -898,7 +588,6 @@ public class AudioPlayActivityV2 extends AudioCenterBaseActivity implements MyMe
     public void onAudioFavEvent(final PushAudioFavEvent fav) {
 
 
-
     }
 
     /**
@@ -1011,15 +700,31 @@ public class AudioPlayActivityV2 extends AudioCenterBaseActivity implements MyMe
     };
 
 
-    private class MyPlayListManagerListener implements PlayListManagerListener {
+    private int currentPlayIndext = 0;
+
+    private class PlayListListener implements PlayListManagerListener {
 
         @Override
         public void initComplete(int resultcode, List<PlayListItem> resultmessage) {
+            switch (resultcode) {
+                case BasePlayListManager.PLAYLISTMANAGER_RESULT_SUCCESS:
+                    //TODO
+                    switchPlayFragment(getAndUpdateAudioPlayFragment(resultmessage.get(currentPlayIndext)), resultmessage.get(currentPlayIndext).getAudioType() + "");
 
+                    break;
+                case BasePlayListManager.PLAYLISTMANAGER_RESULT_NONE:
+                    switchPlayFragment(getStateFragment(PlayStateFragment.PLAYSTATE.DATANULL), STATEFRAGMENTTAG);
+
+                    break;
+                case BasePlayListManager.PLAYLISTMANAGER_RESULT_ERROR_NET:
+                    switchPlayFragment(getStateFragment(PlayStateFragment.PLAYSTATE.NETERROR), STATEFRAGMENTTAG);
+                    break;
+            }
         }
 
         @Override
         public void loadMoreComplete(int resultcode, List<PlayListItem> resultmessage) {
+
 
         }
 
@@ -1073,8 +778,8 @@ public class AudioPlayActivityV2 extends AudioCenterBaseActivity implements MyMe
                     }
                     break;
                 case MSG_MEDIA_PLAY_ONPROGRESS:
-                    currenttime.setText(Utils.formatTime(currPos));
-                    totaltime.setText(Utils.formatTime(duration));
+                    currenttime.setText(AudioCenterUtils.formatTime(currPos));
+                    totaltime.setText(AudioCenterUtils.formatTime(duration));
                     if (needUpdatePlayProgress && duration != 0) {
                         playSeeBar.setProgress((int) (100 * currPos / (float) duration));
                     }

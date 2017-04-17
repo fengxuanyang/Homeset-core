@@ -49,7 +49,7 @@ public class AudioCenterUtils {
     }
 
 
-    private PlayListItem decoratorFavoriteVO(FavoriteVO fav) {
+    public static PlayListItem decoratorFavoriteVO(FavoriteVO fav) {
         PlayListItem playlistitem = null;
         LogUtil.d(TAG, "decoratorFavoriteVO  getId: " + fav.getId() + ",getAudio_id:" + fav.getAudio_id());
         switch (fav.getGroup()) {
@@ -98,7 +98,7 @@ public class AudioCenterUtils {
         return playlistitem;
     }
 
-    private int getCategoryIdFromName(String name) {
+    public static int getCategoryIdFromName(String name) {
         LogUtil.d(TAG, "name:" + name);
         int id = CategoryEnum.MUSIC.getId();
         for (CategoryEnum em : CategoryEnum.values()) {

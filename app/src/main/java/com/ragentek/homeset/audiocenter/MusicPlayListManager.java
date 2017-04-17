@@ -1,7 +1,10 @@
 package com.ragentek.homeset.audiocenter;
 
+import android.content.Context;
+
 import com.ragentek.homeset.audiocenter.model.bean.PlayListDetail;
 import com.ragentek.homeset.audiocenter.model.bean.PlayListItem;
+import com.ragentek.homeset.audiocenter.model.bean.TagDetail;
 import com.ragentek.homeset.audiocenter.net.AudioCenterHttpManager;
 import com.ragentek.homeset.audiocenter.utils.Constants;
 import com.ragentek.homeset.audiocenter.utils.LogUtil;
@@ -22,7 +25,11 @@ import static com.ragentek.homeset.audiocenter.view.fragment.AlbumFragment.PAGE_
  */
 
 public class MusicPlayListManager extends BasePlayListManager {
-    private static final String TAG = "AlbumPlayListManager";
+    private static final String TAG = "MusicPlayListManager";
+
+    public MusicPlayListManager(TagDetail tag, Context context) {
+        super(tag, context);
+    }
 
     @Override
     public void init(PlayListManagerListener playListManagerListener) {
@@ -94,18 +101,5 @@ public class MusicPlayListManager extends BasePlayListManager {
         AudioCenterHttpManager.getInstance(mContext).getMusics(mloadDataSubscriber, mTagDetail.getName(), currentPage, PAGE_COUNT);
     }
 
-    private void requestPlayDataComplete(int resultCode, List<PlayListItem> resultmessage) {
-        if (!isInitted) {
-            mPlayListManagerListener.initComplete(resultCode, resultmessage);
-            if (resultCode == PLAYLISTMANAGER_RESULT_SUCCESS) {
-                wholePlayList = resultmessage;
-                isInitted = true;
-            }
-        } else {
-            mPlayListManagerListener.loadMoreComplete(resultCode, resultmessage);
-            if (resultCode == PLAYLISTMANAGER_RESULT_SUCCESS) {
-                wholePlayList.addAll(resultmessage);
-            }
-        }
-    }
+
 }

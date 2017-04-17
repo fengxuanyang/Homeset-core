@@ -16,7 +16,8 @@ buildscript {
 
 allprojects {
     repositories {
-         maven { url 'http://192.168.12.18:28081/repository/ragentek-public/' }
+        jcenter()
+        mavenCentral()
     }
 }
 
