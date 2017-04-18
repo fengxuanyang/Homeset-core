@@ -25,6 +25,7 @@ import com.ragentek.homeset.core.HomesetApp;
 import com.ragentek.homeset.core.R;
 
 
+import java.util.ArrayList;
 import java.util.List;
 
 import butterknife.BindView;
@@ -42,6 +43,7 @@ public class PlayListFragment extends DialogFragment {
     private PlayListAdapter mPlayListAdapter;
     //TODO is needed to  keep list  move it
     private PlayListListener mPlayListListener;
+    private List<PlayListItem> currentPlaylist;
 
     @BindView(R.id.rv_playlist)
     RecyclerView playlistRV;
@@ -85,19 +87,21 @@ public class PlayListFragment extends DialogFragment {
         }
     }
 
-
     public void addData(List<PlayListItem> list) {
+        LogUtil.d(TAG, "addData: " + isVisible());
+        if (currentPlaylist == null) {
+            currentPlaylist = new ArrayList<>();
+        }
+        currentPlaylist.addAll(list);
+        showData();
+    }
+
+    private void showData() {
         LogUtil.d(TAG, "updateAll: ");
         if (isVisible()) {
-            mPlayListAdapter.addDatas(list);
             mPlayListAdapter.notifyDataSetChanged();
             swipeRefresh.setRefreshing(false);
         }
-    }
-
-    public void updateAll() {
-        LogUtil.d(TAG, "updateAll: ");
-
     }
 
     /**
@@ -135,16 +139,17 @@ public class PlayListFragment extends DialogFragment {
     }
 
     private void initView() {
+        LogUtil.d(TAG, "initView: ");
         swipeRefresh.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
                 LogUtil.d(TAG, "onRefresh: ");
             }
         });
-        swipeRefresh.setRefreshing(true);
         mPlayListAdapter = new PlayListAdapter(mContext);
-        LogUtil.d(TAG, "onCreateView: ");
-
+        if (currentPlaylist != null && currentPlaylist.size() > 0) {
+            mPlayListAdapter.addDatas(currentPlaylist);
+        }
         playlistRV.setHasFixedSize(true);
         final LinearLayoutManager mLayoutManager = new LinearLayoutManager(mContext, LinearLayoutManager.VERTICAL, false);
         playlistRV.setLayoutManager(mLayoutManager);

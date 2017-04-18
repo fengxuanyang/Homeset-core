@@ -142,39 +142,5 @@ public class MusicFragment extends PlayBaseFragment<List<MusicVO>> {
         mSwipeRefreshLayout.setRefreshing(false);
 
     }
-
-
-    @Override
-    public void onResume() {
-        super.onResume();
-        LogUtil.d(TAG, "onResume: ");
-
-    }
-
-    @Override
-    public void onCreate(@Nullable Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        LogUtil.d(TAG, "onCreate: " + this);
-    }
-
-
-    @Override
-    public void onStop() {
-        super.onStop();
-        LogUtil.d(TAG, "onStop: ");
-    }
-
-
-    @Override
-    public void onDetach() {
-        super.onDetach();
-        LogUtil.d(TAG, "onDetach: ");
-    }
-
-    @Override
-    public void onDestroy() {
-        super.onDestroy();
-        LogUtil.d(TAG, "onDestroy: " + this);
-    }
 }
 
