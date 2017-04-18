@@ -14,15 +14,15 @@ public class DowonloadUtils {
     private Context mContext;
 
     private DowonloadUtils(Context context) {
-        mContext= context;
-        Intent intent  = new Intent(mContext, DownloadService.class);
+        mContext = context;
+        Intent intent = new Intent(mContext, DownloadService.class);
         mContext.startService(intent);
     }
 
     public static DowonloadUtils getInstance(Context context) {
-        if(mDowonloadUtils==null) {
+        if (mDowonloadUtils == null) {
             synchronized (DowonloadUtils.class) {
-                if(mDowonloadUtils==null) {
+                if (mDowonloadUtils == null) {
                     mDowonloadUtils = new DowonloadUtils(context.getApplicationContext());
                 }
             }

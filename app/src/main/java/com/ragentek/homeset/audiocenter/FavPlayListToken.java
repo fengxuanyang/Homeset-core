@@ -28,10 +28,10 @@ import static com.ragentek.homeset.audiocenter.view.fragment.AlbumFragment.PAGE_
  * Created by xuanyang.feng on 2017/4/17.
  */
 
-public class FavPlayListManager extends BasePlayListManager {
+public class FavPlayListToken extends BasePlayListToken {
     private static final String TAG = "FavPlayListManager";
 
-    public FavPlayListManager(TagDetail tag, Context context) {
+    public FavPlayListToken(TagDetail tag, Context context) {
         super(tag, context);
     }
 

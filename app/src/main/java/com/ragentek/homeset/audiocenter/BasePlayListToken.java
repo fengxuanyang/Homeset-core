@@ -12,8 +12,8 @@ import java.util.List;
  * Created by xuanyang.feng on 2017/4/17.
  */
 
-public abstract class BasePlayListManager {
-    private static final String TAG = "BasePlayListManager";
+public abstract class BasePlayListToken {
+    private static final String TAG = "BasePlayListToken";
     public static final int PLAYLISTMANAGER_RESULT_ERROR_NET = -1;
     public static final int PLAYLISTMANAGER_RESULT_ERROR_NONTINIT = -2;
 
@@ -28,7 +28,7 @@ public abstract class BasePlayListManager {
     PlayListManagerListener mPlayListManagerListener;
     boolean isInitted = false;
 
-    public BasePlayListManager(TagDetail tag, Context context) {
+    public BasePlayListToken(TagDetail tag, Context context) {
         mTagDetail = tag;
         mContext = context;
     }

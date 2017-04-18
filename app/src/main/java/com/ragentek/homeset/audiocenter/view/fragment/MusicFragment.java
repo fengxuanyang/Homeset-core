@@ -109,7 +109,7 @@ public class MusicFragment extends PlayBaseFragment<List<MusicVO>> {
             @Override
             public void onLoadMore(int currentPage) {
                 PlayListFragment.PlayListListener listListener = (PlayListFragment.PlayListListener) getActivity();
-                listListener.updateListData();
+                listListener.onLoadMore();
                 mSwipeRefreshLayout.setRefreshing(true);
             }
         });

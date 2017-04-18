@@ -142,7 +142,7 @@
 
 
         <activity
-            android:name="com.ragentek.homeset.audiocenter.AudioPlayActivity"
+            android:name="com.ragentek.homeset.audiocenter.AudioPlayActivityV2"
             android:screenOrientation="landscape">
             <intent-filter>
                 <action android:name="android.intent.action.playfav"/>
@@ -153,8 +153,6 @@
                 <category android:name="android.intent.category.DEFAULT"/>
             </intent-filter>
         </activity>
-
-        <service android:name="com.ragentek.homeset.audiocenter.service.DownloadService"/>
 
         <receiver android:name="com.ragentek.homeset.ui.login.LoginReceiver">
             <intent-filter>

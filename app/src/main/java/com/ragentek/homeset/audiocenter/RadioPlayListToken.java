@@ -23,10 +23,10 @@ import static com.ragentek.homeset.audiocenter.view.fragment.AlbumFragment.PAGE_
  * Created by xuanyang.feng on 2017/4/17.
  */
 
-public class RadioPlayListManager extends BasePlayListManager {
-    private static final String TAG = "RadioPlayListManager";
+public class RadioPlayListToken extends BasePlayListToken {
+    private static final String TAG = "RadioPlayListToken";
 
-    public RadioPlayListManager(TagDetail tag, Context context) {
+    public RadioPlayListToken(TagDetail tag, Context context) {
         super(tag, context);
     }
 

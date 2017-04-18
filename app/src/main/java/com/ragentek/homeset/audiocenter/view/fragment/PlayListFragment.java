@@ -18,11 +18,14 @@ import android.widget.TextView;
 import com.ragentek.homeset.audiocenter.adapter.ListItemBaseAdapter;
 import com.ragentek.homeset.audiocenter.adapter.PlayListAdapter;
 import com.ragentek.homeset.audiocenter.model.bean.PlayListDetail;
+import com.ragentek.homeset.audiocenter.model.bean.PlayListItem;
 import com.ragentek.homeset.audiocenter.utils.LogUtil;
 import com.ragentek.homeset.audiocenter.view.widget.RecycleViewEndlessOnScrollListener;
 import com.ragentek.homeset.core.HomesetApp;
 import com.ragentek.homeset.core.R;
 
+
+import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -83,12 +86,18 @@ public class PlayListFragment extends DialogFragment {
     }
 
 
-    public void updateAll() {
+    public void addData(List<PlayListItem> list) {
         LogUtil.d(TAG, "updateAll: ");
         if (isVisible()) {
+            mPlayListAdapter.addDatas(list);
             mPlayListAdapter.notifyDataSetChanged();
             swipeRefresh.setRefreshing(false);
         }
+    }
+
+    public void updateAll() {
+        LogUtil.d(TAG, "updateAll: ");
+
     }
 
     /**
@@ -132,12 +141,10 @@ public class PlayListFragment extends DialogFragment {
                 LogUtil.d(TAG, "onRefresh: ");
             }
         });
+        swipeRefresh.setRefreshing(true);
         mPlayListAdapter = new PlayListAdapter(mContext);
         LogUtil.d(TAG, "onCreateView: ");
-        if (PlayListDetail.getPlayItemCount() > 0) {
-            mPlayListAdapter.addDatas(PlayListDetail.getAll());
-            mPlayListAdapter.updateSellect(PlayListDetail.getCurrnIndex());
-        }
+
         playlistRV.setHasFixedSize(true);
         final LinearLayoutManager mLayoutManager = new LinearLayoutManager(mContext, LinearLayoutManager.VERTICAL, false);
         playlistRV.setLayoutManager(mLayoutManager);
@@ -155,7 +162,7 @@ public class PlayListFragment extends DialogFragment {
         playlistRV.addOnScrollListener(new RecycleViewEndlessOnScrollListener() {
             @Override
             public void onLoadMore(int currentPage) {
-                mPlayListListener.updateListData();
+                mPlayListListener.onLoadMore();
                 swipeRefresh.setRefreshing(true);
             }
         });
@@ -188,7 +195,7 @@ public class PlayListFragment extends DialogFragment {
 
         void onFavClick(int position);
 
-        void updateListData();
+        void onLoadMore();
 
     }
 

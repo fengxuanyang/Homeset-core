@@ -81,7 +81,7 @@ public class AudioRecommendActivity extends AudioCenterBaseActivity {
         mRecommendAdapter.setOnItemClickListener(new ListItemBaseAdapter.OnItemClickListener() {
             @Override
             public void onItemClick(View view, int position) {
-                Intent intent = new Intent(AudioRecommendActivity.this, AudioPlayActivity.class);
+                Intent intent = new Intent(AudioRecommendActivity.this, AudioPlayActivityV2.class);
                 Bundle bundle = new Bundle();
                 bundle.putSerializable(Constants.CATEGORY_TAG, mRecommendAdapter.getData().get(position));
                 intent.putExtras(bundle);

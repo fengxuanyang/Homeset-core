@@ -58,7 +58,7 @@ public class CategoryActivity extends AudioCenterBaseActivity {
                 CategoryDetail mCategoryDetail = mcategorys.get(position);
 
                 if (mCategoryDetail.getId() == FAV_ID) {
-                    Intent intent = new Intent(CategoryActivity.this, AudioPlayActivity.class);
+                    Intent intent = new Intent(CategoryActivity.this, AudioPlayActivityV2.class);
                     TagDetail detail = new TagDetail();
                     detail.setCategoryID(Constants.CATEGORY_FAV);
                     detail.setName(getResources().getString(R.string.my_favoriate));

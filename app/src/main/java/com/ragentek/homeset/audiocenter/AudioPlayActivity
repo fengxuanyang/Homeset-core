@@ -21,9 +21,9 @@ import com.ragentek.homeset.audiocenter.model.bean.TagDetail;
 import com.ragentek.homeset.audiocenter.net.AudioCenterHttpManager;
 import com.ragentek.homeset.audiocenter.service.MediaPlayerManager;
 import com.ragentek.homeset.audiocenter.service.MyMediaPlayerControl;
+import com.ragentek.homeset.audiocenter.utils.AudioCenterUtils;
 import com.ragentek.homeset.audiocenter.utils.Constants;
 import com.ragentek.homeset.audiocenter.utils.LogUtil;
-import com.ragentek.homeset.audiocenter.utils.Utils;
 import com.ragentek.homeset.audiocenter.view.fragment.AlbumFragment;
 import com.ragentek.homeset.audiocenter.view.fragment.MusicFragment;
 import com.ragentek.homeset.audiocenter.view.fragment.PlayBaseFragment;
@@ -318,7 +318,7 @@ public class AudioPlayActivity extends AudioCenterBaseActivity implements MyMedi
                         //because the  album playlist it different with the fragment list
                         // TODO
                         setCurrentAudio(0);
-                        switchPlayFragment(getAndUpdateAudioPlayFragment(mcurrentAudio), mcurrentAudio.getAudioType()+"");
+                        switchPlayFragment(getAndUpdateAudioPlayFragment(mcurrentAudio), mcurrentAudio.getAudioType() + "");
                         updatePlayControlFavUI();
                     } else {
                         //TODO   partial loading
@@ -377,7 +377,7 @@ public class AudioPlayActivity extends AudioCenterBaseActivity implements MyMedi
                         //because the  album playlist it different with the fragment list
                         // TODO
                         setCurrentAudio(0);
-                        switchPlayFragment(getAndUpdateAudioPlayFragment(mcurrentAudio), mcurrentAudio.getAudioType()+"");
+                        switchPlayFragment(getAndUpdateAudioPlayFragment(mcurrentAudio), mcurrentAudio.getAudioType() + "");
                         updatePlayControlFavUI();
                     } else {
                         mCurrentAudioPlayListDetail.addtoList(playListItems);
@@ -446,7 +446,7 @@ public class AudioPlayActivity extends AudioCenterBaseActivity implements MyMedi
                         PlayListItem<List<MusicVO>> playdetail = new PlayListItem<List<MusicVO>>(Constants.AUDIO_TYPE_MUSIC, currentTag.getCategoryID(), -1l);
                         playdetail.setAudio(filterred);
                         //for audio play fragment end
-                        switchPlayFragment(getAndUpdateAudioPlayFragment(playdetail), playdetail.getAudioType()+"");
+                        switchPlayFragment(getAndUpdateAudioPlayFragment(playdetail), playdetail.getAudioType() + "");
                         updatePlayControlFavUI();
                     } else {
                         for (int i = 0; i < mCurrentAudioPlayListDetail.getPlayItemCount(); i++) {
@@ -582,7 +582,7 @@ public class AudioPlayActivity extends AudioCenterBaseActivity implements MyMedi
             PlayListItem item = new PlayListItem(Constants.AUDIO_TYPE_RADIO, 0, 0L);
             item.setAudio(radio);
             mcurrentAudio = item;
-            switchPlayFragment(getAndUpdateAudioPlayFragment(mcurrentAudio), Constants.AUDIO_TYPE_MUSIC+"");
+            switchPlayFragment(getAndUpdateAudioPlayFragment(mcurrentAudio), Constants.AUDIO_TYPE_MUSIC + "");
             updatePlayControlFavUI();
         } else {
 //            updateAudioType();
@@ -849,8 +849,8 @@ public class AudioPlayActivity extends AudioCenterBaseActivity implements MyMedi
     }
 
     @Override
-    public void updateListData() {
-        LogUtil.d(TAG, "updateListData ::");
+    public void onLoadMore() {
+        LogUtil.d(TAG, "onLoadMore ::");
         updateAudioData();
     }
 
@@ -1148,8 +1148,8 @@ public class AudioPlayActivity extends AudioCenterBaseActivity implements MyMedi
                     }
                     break;
                 case MSG_MEDIA_PLAY_ONPROGRESS:
-                    currenttime.setText(Utils.formatTime(currPos));
-                    totaltime.setText(Utils.formatTime(duration));
+                    currenttime.setText(AudioCenterUtils.formatTime(currPos));
+                    totaltime.setText(AudioCenterUtils.formatTime(duration));
                     if (needUpdatePlayProgress && duration != 0) {
                         playSeeBar.setProgress((int) (100 * currPos / (float) duration));
                     }

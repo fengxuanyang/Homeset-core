@@ -5,7 +5,7 @@ import android.content.Intent;
 import android.os.Bundle;
 
 import com.alibaba.fastjson.JSON;
-import com.ragentek.homeset.audiocenter.AudioPlayActivity;
+import com.ragentek.homeset.audiocenter.AudioPlayActivityV2;
 import com.ragentek.homeset.audiocenter.AudioRecommendActivity;
 import com.ragentek.homeset.audiocenter.model.bean.CategoryDetail;
 import com.ragentek.homeset.audiocenter.model.bean.TagDetail;
@@ -107,7 +107,7 @@ public class TingTask extends ForegroundTask {
                     Intent intent = new Intent();
                     intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TOP);
                     if (cat.getId() == -1) {
-                        intent.setClass(mContext, AudioPlayActivity.class);
+                        intent.setClass(mContext, AudioPlayActivityV2.class);
                         TagDetail tag = new TagDetail();
                         tag.setName(mContext.getResources().getString(R.string.my_favoriate));
                         tag.setCategoryID(Constants.CATEGORY_FAV);
@@ -141,7 +141,7 @@ public class TingTask extends ForegroundTask {
 
         Intent intent = new Intent();
         intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TOP);
-        intent.setClass(mContext, AudioPlayActivity.class);
+        intent.setClass(mContext, AudioPlayActivityV2.class);
         Bundle bundle = new Bundle();
 
         int categoryId = -1;
