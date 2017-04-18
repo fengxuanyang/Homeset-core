@@ -25,13 +25,14 @@ public abstract class BasePlayListToken {
     public static final int PLAYLISTMANAGER_RESULT_SUCCESS = 0;
     public static final int PLAYLISTMANAGER_RESULT_NONE = 1;
 
-    private TagDetail mTagDetail;
-    private Context mContext;
-    private List<PlayListItem> wholePlayList;
-    private int currentPlayIndext = 1;
+    TagDetail mTagDetail;
+    Context mContext;
+    List<PlayListItem> wholePlayList;
+    int currentPlayIndext = 1;
 
-    private PlayListManagerListener mPlayListManagerListener;
-    private boolean isInitted = false;
+    PlayListManagerListener mPlayListManagerListener;
+    boolean isInitted = false;
+    int currentPage = 1;
 
     public BasePlayListToken(TagDetail tag, Context context) {
         mTagDetail = tag;
@@ -112,11 +113,10 @@ public abstract class BasePlayListToken {
     }
 
 
-    public void updateFav2Server(long audioid) {
+    public void updateFav2Server(final long audioid) {
         int result = isCurrentPlaylistContain(audioid);
         if (result != -1) {
             final PlayListItem item2BeChanged = wholePlayList.get(result);
-
             Subscriber<String> mSetFavSubscriber = new Subscriber<String>() {
                 @Override
                 public void onCompleted() {
@@ -126,12 +126,14 @@ public abstract class BasePlayListToken {
                 @Override
                 public void onError(Throwable e) {
                     LogUtil.e(TAG, "onNext result: " + e.getMessage());
+                    mPlayListManagerListener.onUpdate2ServerComplete(PLAYLISTMANAGER_RESULT_ERROR_NET, audioid);
                 }
 
                 @Override
                 public void onNext(String result) {
                     LogUtil.d(TAG, "onNext result: " + result);
                     item2BeChanged.updateFav();
+                    mPlayListManagerListener.onUpdate2ServerComplete(PLAYLISTMANAGER_RESULT_SUCCESS, audioid);
                 }
             };
             LogUtil.d(TAG, "setFav  : " + item2BeChanged.getId());
@@ -148,6 +150,9 @@ public abstract class BasePlayListToken {
 
     }
 
+    void onUpdate2ServerComplete(int resultCode, long audioid) {
+
+    }
 
     /**
      * @param audioId audioId

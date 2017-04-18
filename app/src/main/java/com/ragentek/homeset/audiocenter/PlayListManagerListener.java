@@ -13,6 +13,6 @@ public interface PlayListManagerListener {
 
     void loadMoreComplete(int resultcode, List<PlayListItem> resultmessage);
 
-    void onUpdate2ServerComplete(int resultcode, PlayListItem resultmessage);
+    void onUpdate2ServerComplete(int resultcode, long audioid);
 
 }

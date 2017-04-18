@@ -51,9 +51,10 @@ public class FavPlayListToken extends BasePlayListToken {
     }
 
     @Override
-    void update2Server(PlayListItem item) {
-        LogUtil.d(TAG, "update2Server  ID: " + item.getId());
+    void updateLocalPlayList() {
+
     }
+
 
     private void getTAGFav() {
         LogUtil.d(TAG, "getTAGFav: " + mTagDetail.getCategoryID() + ":getName" + mTagDetail.getName());

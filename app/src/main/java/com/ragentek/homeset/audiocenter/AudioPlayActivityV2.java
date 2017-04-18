@@ -37,6 +37,7 @@ import com.ragentek.homeset.core.R;
 import com.ragentek.homeset.core.task.event.BackHomeEvent;
 import com.ragentek.homeset.core.task.event.PushAudioFavEvent;
 import com.ragentek.protocol.commons.audio.AlbumVO;
+import com.ragentek.protocol.commons.audio.MusicVO;
 import com.ragentek.protocol.commons.audio.RadioVO;
 import com.ragentek.protocol.constants.Category;
 
@@ -302,46 +303,8 @@ public class AudioPlayActivityV2 extends AudioCenterBaseActivity implements MyMe
     void setFav() {
         LogUtil.d(TAG, "setFav ");
 
+        mPlayListManager.updateFav2Server(mPlayListManager.getPlayListItemFromIndext(currentPlayIndex).getId().longValue());
 
-        mPlayListManager.getPlayListItemFromIndext(currentPlayIndex);
-        mPlayListManager.update2Server();
-        Subscriber<String> mSetFavSubscriber = new Subscriber<String>() {
-            @Override
-            public void onCompleted() {
-                LogUtil.d(TAG, "onNext onCompleted: ");
-            }
-
-            @Override
-            public void onError(Throwable e) {
-                LogUtil.e(TAG, "onNext result: " + e.getMessage());
-            }
-
-            @Override
-            public void onNext(String result) {
-                LogUtil.d(TAG, "onNext result: " + result);
-                mcurrentAudio.updateFav();
-                int contain = isCurrentPlaylistContain(mcurrentAudio.getId().longValue());
-                LogUtil.d(TAG, "onNext mcurrentAudio: " + mcurrentAudio);
-                LogUtil.d(TAG, "onNext mcurrentAudio: " + mCurrentAudioPlayListDetail.getPlayItemCount());
-                LogUtil.d(TAG, "onNext contain: " + contain);
-                if (contain > -1) {
-                    mCurrentAudioPlayListDetail.setPlayItem(contain, mcurrentAudio);
-                } else {
-                    mCurrentAudioPlayListDetail.addtoList(mcurrentAudio);
-                }
-                //update the playlist
-                //TODO if remove at the fav view ,must update the playlist ui
-                updatePlayControlFavUI();
-            }
-        };
-        LogUtil.d(TAG, "setFav  : " + mcurrentAudio.getId());
-
-        if (mcurrentAudio.getFav() == Constants.UNFAV) {
-            AudioCenterHttpManager.getInstance(this).addFavorite(mSetFavSubscriber, mcurrentAudio.getId(), mcurrentAudio.getCategoryType(), mcurrentAudio.getGroup());
-        } else {
-            AudioCenterHttpManager.getInstance(this).removeFavorite(mSetFavSubscriber, mcurrentAudio.getId(), mcurrentAudio.getCategoryType(), mcurrentAudio.getGroup());
-
-        }
     }
 
 
@@ -351,7 +314,7 @@ public class AudioPlayActivityV2 extends AudioCenterBaseActivity implements MyMe
     private void setCurrentAudio(int position) {
         LogUtil.d(TAG, "setCurrentAudio:" + position);
         currentPlayIndex = position;
-        mcurrentAudio = mPlayListManager.getPlayListItemFromIndext(position)
+        mcurrentAudio = mPlayListManager.getPlayListItemFromIndext(position);
     }
 
 
@@ -453,25 +416,24 @@ public class AudioPlayActivityV2 extends AudioCenterBaseActivity implements MyMe
     }
 
 
-    private void updatePlayFragment(int position) {
-        PlayListItem item = mCurrentAudioPlayListDetail.getPlayItem(position);
+    private void updatePlayFragment() {
         LogUtil.d(TAG, "updatePlayFragment:" + currentPlayListType);
         switch (currentPlayListType) {
             //FAV mode ,switch the fragment
             case Constants.PLAYLIST_FAV:
-                //TODO  separate the fragment
-                switchPlayFragment(getAndUpdateAudioPlayFragment(item), item.getAudioType() + "");
-                updatePlayControlFavUI();
+                switchPlayFragment(getAndUpdateAudioPlayFragment(mcurrentAudio), mcurrentAudio.getAudioType() + "");
                 break;
             case Constants.PLAYLIST_MUSIC:
-                mCurrentPlayFragment.setInnerSellected(position);
+                MusicVO music = (MusicVO) mcurrentAudio.getAudio();
+                mCurrentPlayFragment.setPlaydata(music);
+
                 break;
             case Constants.PLAYLIST_RADIO:
-                RadioVO radio = (RadioVO) item.getAudio();
+                RadioVO radio = (RadioVO) mcurrentAudio.getAudio();
                 mCurrentPlayFragment.setPlaydata(radio);
                 break;
             case Constants.PLAYLIST_ALBUM:
-                AlbumVO album = (AlbumVO) item.getAudio();
+                AlbumVO album = (AlbumVO) mcurrentAudio.getAudio();
                 mCurrentPlayFragment.setPlaydata(album);
                 break;
         }
@@ -483,17 +445,6 @@ public class AudioPlayActivityV2 extends AudioCenterBaseActivity implements MyMe
         }
     }
 
-    @Override
-    protected void onResume() {
-        LogUtil.d(TAG, "onResume: ");
-        super.onResume();
-    }
-
-    @Override
-    protected void onStart() {
-        LogUtil.d(TAG, "onStart: ");
-        super.onStart();
-    }
 
     @Override
     protected void onDestroy() {
@@ -578,25 +529,11 @@ public class AudioPlayActivityV2 extends AudioCenterBaseActivity implements MyMe
 
     }
 
-    /**
-     * @param audioId  audioId
-     * @param favstate favstate
-     * @return -1: current playlist do not  contain the audioId  ,else return the index in the playlist
-     */
-    private int updateTheFavState(long audioId, int favstate) {
-        int containIndex = isCurrentPlaylistContain(audioId);
-        if (containIndex != -1) {
-            PlayListItem item = mCurrentAudioPlayListDetail.getPlayItem(containIndex);
-            item.setFav(favstate);
-            mCurrentAudioPlayListDetail.setPlayItem(containIndex, item);
-        }
-        return containIndex;
-    }
-
 
     private void updateWholeView() {
         updatePlayControlFavUI();
-        updatePlayFragment(PlayListDetail.getCurrnIndex());
+        updatePlayFragment();
+        updatePlayListFragmert(currentPlayIndex);
     }
 
     //TODO div music and radio
@@ -714,10 +651,11 @@ public class AudioPlayActivityV2 extends AudioCenterBaseActivity implements MyMe
         }
 
         @Override
-        public void onUpdate2ServerComplete(int resultcode, PlayListItem resultmessage) {
+        public void onUpdate2ServerComplete(int resultcode, long id) {
 
         }
     }
+
 
     private class AudioPlayerHandler extends Handler {
         private static final int MSG_MEDIA_INIT_COMPLETE = 0;
