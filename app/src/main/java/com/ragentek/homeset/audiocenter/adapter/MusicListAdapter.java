@@ -24,10 +24,12 @@ import butterknife.ButterKnife;
 public class MusicListAdapter extends ListItemBaseAdapter<List<MusicVO>, MusicListAdapter.AlbumItemAdapterViewHolder> {
     private static final String TAG = "TrackListAdapter";
 
+    public MusicListAdapter(Context context, int index) {
+        super(context, index);
+    }
 
     public MusicListAdapter(Context context) {
         super(context);
-        LogUtil.d(TAG, "TrackListAdapter: ");
     }
 
     @Override

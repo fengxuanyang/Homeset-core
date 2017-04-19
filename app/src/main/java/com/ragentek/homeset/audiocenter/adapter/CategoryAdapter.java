@@ -31,15 +31,14 @@ public class CategoryAdapter extends ListItemBaseAdapter<List<CategoryDetail>, C
 
     public CategoryAdapter(Context context) {
         super(context);
-        LogUtil.d(TAG, "CategoryAdapter: ");
         colorArray.add(R.color.colorYellow);
         colorArray.add(R.color.colorPurple);
         colorArray.add(R.color.colorPowdergreen);
         colorArray.add(R.color.colorPowderblue);
         colorArray.add(R.color.colorPink);
         colorArray.add(R.color.colorOrange);
-        ;
     }
+
 
     @Override
     public CategoryAdapter.CategoryAdapterViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {

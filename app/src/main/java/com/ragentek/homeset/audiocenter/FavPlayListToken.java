@@ -68,7 +68,6 @@ public class FavPlayListToken extends BasePlayListToken {
             @Override
             public void onError(Throwable e) {
                 LogUtil.e(TAG, "getTAGFav onError: " + e.getMessage());
-
             }
 
             @Override
@@ -93,6 +92,4 @@ public class FavPlayListToken extends BasePlayListToken {
         };
         AudioCenterHttpManager.getInstance(mContext).getFavorites(mloadDataSubscriber, currentPage, PAGE_COUNT);
     }
-
-
 }

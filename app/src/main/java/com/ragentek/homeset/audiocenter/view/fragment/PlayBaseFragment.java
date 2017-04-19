@@ -22,7 +22,9 @@ public abstract class PlayBaseFragment<T> extends BaseFragment {
 
     public void setPlaydata(T playdata) {
         this.playdata = playdata;
-        onDataChanged(playdata);
+        if (isVisible()) {
+            onDataChanged(playdata);
+        }
     }
 
     public PlayBaseFragment(T data) {

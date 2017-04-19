@@ -19,8 +19,13 @@ public abstract class ListItemBaseAdapter<T extends List, R extends RecyclerView
     Context mContext;
     int curSellect = 0;
 
-    public ListItemBaseAdapter(Context context, int index) {
-        curSellect = index;
+    public ListItemBaseAdapter(Context context, int initindex) {
+        curSellect = initindex;
+        mContext = context;
+    }
+
+    public ListItemBaseAdapter(Context context) {
+        mContext = context;
     }
 
     public void updateSellect(int index) {
@@ -28,10 +33,6 @@ public abstract class ListItemBaseAdapter<T extends List, R extends RecyclerView
         curSellect = index;
         notifyItemChanged(preSellect);
         notifyItemChanged(curSellect);
-    }
-
-    public ListItemBaseAdapter(Context context) {
-        mContext = context;
     }
 
 
@@ -66,6 +67,7 @@ public abstract class ListItemBaseAdapter<T extends List, R extends RecyclerView
 
     /**
      * new  data
+     *
      * @param data
      */
     public void setDatas(T data) {

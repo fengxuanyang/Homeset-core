@@ -3,6 +3,7 @@ package com.ragentek.homeset.audiocenter.view.fragment;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -44,7 +45,7 @@ public class SingleMusicFragment extends PlayBaseFragment<MusicVO> {
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        LogUtil.d(TAG, "onCreate: " + this);
+        LogUtil.d(TAG, "SingleMusicFragment onCreate: " + this);
 
         View view = inflater.inflate(R.layout.audioenter_fragment_music_detail, container, false);
         ButterKnife.bind(this, view);
@@ -53,19 +54,11 @@ public class SingleMusicFragment extends PlayBaseFragment<MusicVO> {
     }
 
     private void initView() {
-        updateAlbumart();
         updateData();
+        updateView();
     }
 
     private void updateData() {
-
-        LogUtil.d(TAG, "updateAlbumart getCover_url: " + playdata.getCover_url());
-        LogUtil.d(TAG, "updateAlbumart getSong_name: " + playdata.getSong_name());
-        LogUtil.d(TAG, "updateAlbumart getPlay_url: " + playdata.getPlay_url());
-        LogUtil.d(TAG, "updateAlbumart getId: " + playdata.getId());
-        LogUtil.d(TAG, "updateAlbumart getAlbum_name: " + playdata.getAlbum_name());
-
-        musicName.setText(playdata.getSong_name());
         List<PlayItem> list = new ArrayList<>();
         PlayItem item = new PlayItem();
         item.setPlayUrl(playdata.getPlay_url());
@@ -75,8 +68,10 @@ public class SingleMusicFragment extends PlayBaseFragment<MusicVO> {
         control.setPlayList(list, 0);
     }
 
-
-    private void updateAlbumart() {
+    private void updateView() {
+        albumText.setText(playdata.getAlbum_name());
+        musicName.setText(playdata.getSong_name());
+        singerText.setText(playdata.getSinger_name());
         if (playdata.getCover_url() == null) {
             mSimpleDraweeView.setImageResource(R.drawable.placeholder_disk);
         } else {
@@ -108,6 +103,9 @@ public class SingleMusicFragment extends PlayBaseFragment<MusicVO> {
 
     @Override
     public void onDataChanged(MusicVO playdata) {
+        Log.d(TAG, "onDataChanged: ");
+        updateView();
+        updateData();
 
     }
 }

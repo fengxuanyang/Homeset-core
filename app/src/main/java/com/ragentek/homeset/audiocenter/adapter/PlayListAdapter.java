@@ -30,10 +30,10 @@ import butterknife.ButterKnife;
 public class PlayListAdapter extends ListItemBaseAdapter<List<PlayListItem>, PlayListAdapter.PlayListItemAdapterViewHolder> {
     private static final String TAG = "PlayListAdapter";
 
-    public PlayListAdapter(Context context) {
-        super(context);
-        LogUtil.d(TAG, "TrackListAdapter: ");
+    public PlayListAdapter(Context context, int index) {
+        super(context, index);
     }
+
 
     @Override
     public PlayListAdapter.PlayListItemAdapterViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
@@ -134,7 +134,7 @@ public class PlayListAdapter extends ListItemBaseAdapter<List<PlayListItem>, Pla
     public int getItemCount() {
         LogUtil.d(TAG, "getItemCount ");
         if (mData != null) {
-            LogUtil.d(TAG, "getItemCount "+mData.size());
+            LogUtil.d(TAG, "getItemCount " + mData.size());
 
             return mData.size();
 

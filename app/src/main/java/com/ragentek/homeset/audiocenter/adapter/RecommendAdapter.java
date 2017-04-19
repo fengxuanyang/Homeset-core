@@ -24,10 +24,12 @@ import butterknife.ButterKnife;
 public class RecommendAdapter extends ListItemBaseAdapter<List<TagDetail>, RecommendAdapter.IndexViewHolder> {
     private static final String TAG = "RecommendAdapter";
 
+    public RecommendAdapter(Context context, int initindex) {
+        super(context, initindex);
+    }
 
     public RecommendAdapter(Context context) {
         super(context);
-        LogUtil.d(TAG, "RecommendAdapter");
     }
 
     @Override

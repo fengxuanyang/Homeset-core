@@ -47,9 +47,10 @@ public class MusicPlayListToken extends BasePlayListToken {
     }
 
     @Override
-    void update2Server(PlayListItem item) {
-        LogUtil.d(TAG, "update2Server  ID: " + item.getId());
+    void updateLocalPlayList() {
+
     }
+
 
     private void getTAGMusic() {
         LogUtil.d(TAG, "getTAGMusics: " + mTagDetail.getCategoryID() + ":getName" + mTagDetail.getName());
@@ -83,16 +84,19 @@ public class MusicPlayListToken extends BasePlayListToken {
                         if (music != null && music.getSong_name() != null) {
                             LogUtil.d(TAG, "getTAGMusics :" + music.getSong_name());
                             LogUtil.d(TAG, "getCover_url :" + music.getCover_url());
-                            PlayListItem item = new PlayListItem(Constants.AUDIO_TYPE_MUSIC, mTagDetail.getCategoryID(), music.getId());
+
+                            PlayListItem item = new PlayListItem(Constants.AUDIO_TYPE_SINGLE_MUSIC, mTagDetail.getCategoryID(), music.getId());
+
+//                            PlayListItem item = new PlayListItem(Constants.AUDIO_TYPE_MUSIC, mTagDetail.getCategoryID(), music.getId());
                             item.setAudio(music);
                             item.setFav(music.getFavorite());
                             item.setGroup(Constants.GROUP_MUSIC);
                             playListItems.add(item);
                             filterred.add(music);
-                            LogUtil.d(TAG, "setPlayList :i:" + i + "" + music.getSong_name() + "" + music.getPlay_url());
+                            LogUtil.d(TAG, "add :i:" + i + "" + music.getSong_name() + "" + music.getPlay_url());
                         }
-                        requestPlayDataComplete(PLAYLISTMANAGER_RESULT_SUCCESS, playListItems);
                     }
+                    requestPlayDataComplete(PLAYLISTMANAGER_RESULT_SUCCESS, playListItems);
 
                 }
             }

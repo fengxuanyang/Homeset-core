@@ -20,6 +20,7 @@ import com.ragentek.homeset.audiocenter.adapter.PlayListAdapter;
 import com.ragentek.homeset.audiocenter.model.bean.PlayListDetail;
 import com.ragentek.homeset.audiocenter.model.bean.PlayListItem;
 import com.ragentek.homeset.audiocenter.utils.LogUtil;
+import com.ragentek.homeset.audiocenter.view.widget.ImageWithText;
 import com.ragentek.homeset.audiocenter.view.widget.RecycleViewEndlessOnScrollListener;
 import com.ragentek.homeset.core.HomesetApp;
 import com.ragentek.homeset.core.R;
@@ -38,12 +39,15 @@ import butterknife.OnClick;
  */
 
 public class PlayListFragment extends DialogFragment {
+    public static final String TAG_PLAYINDEX = "playindex";
+
     private static final String TAG = "PlayListFragment";
     public Activity mContext;
     private PlayListAdapter mPlayListAdapter;
     //TODO is needed to  keep list  move it
     private PlayListListener mPlayListListener;
     private List<PlayListItem> currentPlaylist;
+    private int playindex;
 
     @BindView(R.id.rv_playlist)
     RecyclerView playlistRV;
@@ -69,23 +73,21 @@ public class PlayListFragment extends DialogFragment {
         LogUtil.d(TAG, "onCreate: ");
         super.onCreate(savedInstanceState);
         setStyle(DialogFragment.STYLE_NO_FRAME, R.style.BottomDialog);
+        Bundle argument = getArguments();
+        if (argument != null) {
+            playindex = argument.getInt(TAG_PLAYINDEX);
+        }
     }
 
 
     public void setCurrentPlayIndext(int index) {
         LogUtil.d(TAG, "setCurrentPlayIndext: " + index);
+        playindex = index;
         if (isVisible()) {
-            mPlayListAdapter.updateSellect(index);
+            mPlayListAdapter.updateSellect(playindex);
         }
     }
 
-
-    public void updateItem(int index) {
-        LogUtil.d(TAG, "updateItem: " + index);
-        if (isVisible()) {
-            mPlayListAdapter.updateSellect(index);
-        }
-    }
 
     public void addData(List<PlayListItem> list) {
         LogUtil.d(TAG, "addData: " + isVisible());
@@ -146,7 +148,7 @@ public class PlayListFragment extends DialogFragment {
                 LogUtil.d(TAG, "onRefresh: ");
             }
         });
-        mPlayListAdapter = new PlayListAdapter(mContext);
+        mPlayListAdapter = new PlayListAdapter(mContext, playindex);
         if (currentPlaylist != null && currentPlaylist.size() > 0) {
             mPlayListAdapter.addDatas(currentPlaylist);
         }

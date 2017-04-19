@@ -74,11 +74,10 @@ public class MusicFragment extends PlayBaseFragment<List<MusicVO>> {
 
     @Override
     void onDataChanged(List<MusicVO> playdata) {
-        if (isVisible()) {
-            updateTitle();
-            updateAlbumart();
-            loadData();
-        }
+        updateTitle();
+        updateAlbumart();
+        loadData();
+
     }
 
 

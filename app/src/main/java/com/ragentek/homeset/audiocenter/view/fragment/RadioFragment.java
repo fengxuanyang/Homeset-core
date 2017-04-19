@@ -50,10 +50,8 @@ public class RadioFragment extends PlayBaseFragment<RadioVO> {
 
     @Override
     void onDataChanged(RadioVO playdata) {
-        if (isVisible()) {
-            updateData();
-            updateView();
-        }
+        updateData();
+        updateView();
     }
 
     @Override

@@ -67,12 +67,11 @@ public class AlbumFragment extends PlayBaseFragment<AlbumVO> {
     @Override
     void onDataChanged(AlbumVO playdata) {
         LogUtil.d(TAG, "onDataChanged: ");
-        if (isVisible()) {
-            updateTitle();
-            updateAlbumart();
-            currentPage = 1;
-            loadData();
-        }
+        updateTitle();
+        updateAlbumart();
+        currentPage = 1;
+        loadData();
+
 
     }
 

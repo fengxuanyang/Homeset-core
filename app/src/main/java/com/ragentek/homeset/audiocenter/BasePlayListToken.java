@@ -28,7 +28,6 @@ public abstract class BasePlayListToken {
     TagDetail mTagDetail;
     Context mContext;
     List<PlayListItem> wholePlayList;
-    int currentPlayIndext = 1;
 
     PlayListManagerListener mPlayListManagerListener;
     boolean isInitted = false;
@@ -114,9 +113,11 @@ public abstract class BasePlayListToken {
 
 
     public void updateFav2Server(final long audioid) {
-        int result = isCurrentPlaylistContain(audioid);
-        if (result != -1) {
-            final PlayListItem item2BeChanged = wholePlayList.get(result);
+        int serachresult = isCurrentPlaylistContain(audioid);
+        LogUtil.d(TAG, "updateFav2Server result: " + serachresult);
+
+        if (serachresult != -1) {
+            final PlayListItem item2BeChanged = wholePlayList.get(serachresult);
             Subscriber<String> mSetFavSubscriber = new Subscriber<String>() {
                 @Override
                 public void onCompleted() {
@@ -126,12 +127,11 @@ public abstract class BasePlayListToken {
                 @Override
                 public void onError(Throwable e) {
                     LogUtil.e(TAG, "onNext result: " + e.getMessage());
-                    mPlayListManagerListener.onUpdate2ServerComplete(PLAYLISTMANAGER_RESULT_ERROR_NET, audioid);
                 }
 
                 @Override
                 public void onNext(String result) {
-                    LogUtil.d(TAG, "onNext result: " + result);
+                    LogUtil.d(TAG, "onNext result: " + result + ",item2BeChanged:" + item2BeChanged);
                     item2BeChanged.updateFav();
                     mPlayListManagerListener.onUpdate2ServerComplete(PLAYLISTMANAGER_RESULT_SUCCESS, audioid);
                 }
@@ -150,9 +150,6 @@ public abstract class BasePlayListToken {
 
     }
 
-    void onUpdate2ServerComplete(int resultCode, long audioid) {
-
-    }
 
     /**
      * @param audioId audioId

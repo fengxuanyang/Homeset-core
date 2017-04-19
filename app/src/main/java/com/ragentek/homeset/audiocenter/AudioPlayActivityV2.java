@@ -8,6 +8,7 @@ import android.os.Message;
 import android.os.RemoteException;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
+import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
@@ -26,6 +27,7 @@ import com.ragentek.homeset.audiocenter.utils.AudioCenterUtils;
 import com.ragentek.homeset.audiocenter.utils.Constants;
 import com.ragentek.homeset.audiocenter.utils.LogUtil;
 import com.ragentek.homeset.audiocenter.view.fragment.AlbumFragment;
+import com.ragentek.homeset.audiocenter.view.fragment.BaseFragment;
 import com.ragentek.homeset.audiocenter.view.fragment.MusicFragment;
 import com.ragentek.homeset.audiocenter.view.fragment.PlayBaseFragment;
 import com.ragentek.homeset.audiocenter.view.fragment.PlayListFragment;
@@ -61,13 +63,11 @@ public class AudioPlayActivityV2 extends AudioCenterBaseActivity implements MyMe
     private PlayListFragment playListFragment;
     private static final String STATEFRAGMENTTAG = "playstatefragment";
 
-    private int currentPlayListType = Constants.PLAYLIST_ALBUM;
-    private PlayListItem mcurrentAudio;
     private final String PLAYLIST = "playlist";
     //for media player
     private MediaPlayerManager.MediaPlayerHandler mediaPlayerHandler;
 
-    private BasePlayListToken mPlayListManager;
+    private BasePlayListToken mPlayListToken;
 
     private PlayListListener mPlayListListener = new PlayListListener();
     //    private MyMediaListener mediaListener;
@@ -175,25 +175,20 @@ public class AudioPlayActivityV2 extends AudioCenterBaseActivity implements MyMe
             case Category.ID.STORYTELLING:
             case Category.ID.STOCK:
             case Category.ID.HISTORY:
-                currentPlayListType = Constants.PLAYLIST_ALBUM;
-                mPlayListManager = new AlbumPlayListToken(mTagDetail, this);
+                mPlayListToken = new AlbumPlayListToken(mTagDetail, this);
                 break;
             case Category.ID.RADIO:
-                mPlayListManager = new RadioPlayListToken(mTagDetail, this);
-                currentPlayListType = Constants.PLAYLIST_RADIO;
+                mPlayListToken = new RadioPlayListToken(mTagDetail, this);
                 break;
             case Category.ID.MUSIC:
-                currentPlayListType = Constants.PLAYLIST_MUSIC;
-                mPlayListManager = new MusicPlayListToken(mTagDetail, this);
+                mPlayListToken = new MusicPlayListToken(mTagDetail, this);
                 break;
             case Constants.CATEGORY_FAV:
-                currentPlayListType = Constants.PLAYLIST_MUSIC;
-                currentPlayListType = Constants.PLAYLIST_FAV;
-                mPlayListManager = new FavPlayListToken(mTagDetail, this);
+                mPlayListToken = new FavPlayListToken(mTagDetail, this);
                 break;
         }
         audioName.setText(mTagDetail.getName());
-        mPlayListManager.init(mPlayListListener);
+        mPlayListToken.init(mPlayListListener);
     }
 
     private TagDetail getTagDetail() {
@@ -211,7 +206,7 @@ public class AudioPlayActivityV2 extends AudioCenterBaseActivity implements MyMe
     @Override
     public void onBackPressed() {
         //fav mode
-        if (currentPlayListType == Constants.PLAYLIST_FAV) {
+        if (mPlayListToken instanceof FavPlayListToken) {
             EventBus.getDefault().post(new BackHomeEvent());
         }
         finish();
@@ -223,8 +218,7 @@ public class AudioPlayActivityV2 extends AudioCenterBaseActivity implements MyMe
     void playPre() {
         LogUtil.d(TAG, "playPre:");
         int id = currentPlayIndex;
-        if (mPlayListManager.gePlayList() != null) {
-
+        if (mPlayListToken.gePlayList() != null) {
             if (id > 0) {
                 id--;
             }
@@ -238,9 +232,8 @@ public class AudioPlayActivityV2 extends AudioCenterBaseActivity implements MyMe
     void playNext() {
         LogUtil.d(TAG, "playNext:");
         int id = currentPlayIndex;
-
-        if (mPlayListManager.gePlayList() != null) {
-            if (id < mPlayListManager.gePlayList().size() - 1) {
+        if (mPlayListToken.gePlayList() != null) {
+            if (id < mPlayListToken.gePlayList().size() - 1) {
                 id++;
             } else {
                 id = 0;
@@ -248,20 +241,17 @@ public class AudioPlayActivityV2 extends AudioCenterBaseActivity implements MyMe
             setCurrentAudio(id);
             updateWholeView();
         }
-
-
     }
 
     //TODO for test switch   the fragment
     @OnClick(R.id.image_play_mode)
     void switchPlayMode() {
         LogUtil.d(TAG, "switchPlayMode:");
-        if (mcurrentAudio.getAudioType() == Constants.AUDIO_TYPE_ALBUM) {
+        if (getCurrentPlayItem().getAudioType() == Constants.AUDIO_TYPE_ALBUM) {
             RadioVO radio = new RadioVO();
             PlayListItem item = new PlayListItem(Constants.AUDIO_TYPE_RADIO, 0, 0L);
             item.setAudio(radio);
-            mcurrentAudio = item;
-            switchPlayFragment(getAndUpdateAudioPlayFragment(mcurrentAudio), Constants.AUDIO_TYPE_MUSIC + "");
+            switchPlayFragment(getAndUpdateAudioPlayFragment(getCurrentPlayItem()), Constants.AUDIO_TYPE_MUSIC + "");
             updatePlayControlFavUI();
         } else {
 //            updateAudioType();
@@ -276,23 +266,23 @@ public class AudioPlayActivityV2 extends AudioCenterBaseActivity implements MyMe
         Fragment fragment = getSupportFragmentManager().findFragmentByTag(PLAYLIST);
         FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
         if (fragment != null) {
-            playListFragment = (PlayListFragment) fragment;//= new PlayListFragment(mAlbums);
-
+            playListFragment = (PlayListFragment) fragment;
             ft.attach(playListFragment).commit();
         } else {
             playListFragment = new PlayListFragment();
-
+            Bundle b = new Bundle();
+            b.putInt(PlayListFragment.TAG_PLAYINDEX, currentPlayIndex);
+            playListFragment.setArguments(b);
             ft.add(playListFragment, PLAYLIST).commit();
         }
-        playListFragment.addData(mPlayListManager.gePlayList());
-
+        playListFragment.addData(mPlayListToken.gePlayList());
+        playListFragment.setCurrentPlayIndext(currentPlayIndex);
     }
 
     @OnClick(R.id.iv_back)
     void doBack() {
-        LogUtil.d(TAG, "doBack eventType:" + eventType + ",currentPlayListType:" + currentPlayListType);
         //fav mode and speech command ,back to launcher
-        if (currentPlayListType == Constants.PLAYLIST_FAV || Constants.TASKEVENT_TYPE_SPEECH.equals(eventType)) {
+        if (mPlayListToken instanceof FavPlayListToken || Constants.TASKEVENT_TYPE_SPEECH.equals(eventType)) {
             EventBus.getDefault().post(new BackHomeEvent());
         }
         finish();
@@ -302,9 +292,7 @@ public class AudioPlayActivityV2 extends AudioCenterBaseActivity implements MyMe
     @OnClick(R.id.image_fav)
     void setFav() {
         LogUtil.d(TAG, "setFav ");
-
-        mPlayListManager.updateFav2Server(mPlayListManager.getPlayListItemFromIndext(currentPlayIndex).getId().longValue());
-
+        mPlayListToken.updateFav2Server(getCurrentPlayItem().getId().longValue());
     }
 
 
@@ -314,13 +302,12 @@ public class AudioPlayActivityV2 extends AudioCenterBaseActivity implements MyMe
     private void setCurrentAudio(int position) {
         LogUtil.d(TAG, "setCurrentAudio:" + position);
         currentPlayIndex = position;
-        mcurrentAudio = mPlayListManager.getPlayListItemFromIndext(position);
     }
 
 
     private void updatePlayControlFavUI() {
-        LogUtil.d(TAG, "updateFavUI:" + mcurrentAudio.getFav());
-        if (mcurrentAudio.getFav() == Constants.FAV) {
+        LogUtil.d(TAG, "updateFavUI:" + getCurrentPlayItem().getFav());
+        if (getCurrentPlayItem().getFav() == Constants.FAV) {
             favIV.setImageResource(R.drawable.control_fav);
         } else {
             favIV.setImageResource(R.drawable.control_unfav);
@@ -417,25 +404,20 @@ public class AudioPlayActivityV2 extends AudioCenterBaseActivity implements MyMe
 
 
     private void updatePlayFragment() {
-        LogUtil.d(TAG, "updatePlayFragment:" + currentPlayListType);
-        switch (currentPlayListType) {
-            //FAV mode ,switch the fragment
-            case Constants.PLAYLIST_FAV:
-                switchPlayFragment(getAndUpdateAudioPlayFragment(mcurrentAudio), mcurrentAudio.getAudioType() + "");
-                break;
-            case Constants.PLAYLIST_MUSIC:
-                MusicVO music = (MusicVO) mcurrentAudio.getAudio();
-                mCurrentPlayFragment.setPlaydata(music);
-
-                break;
-            case Constants.PLAYLIST_RADIO:
-                RadioVO radio = (RadioVO) mcurrentAudio.getAudio();
-                mCurrentPlayFragment.setPlaydata(radio);
-                break;
-            case Constants.PLAYLIST_ALBUM:
-                AlbumVO album = (AlbumVO) mcurrentAudio.getAudio();
-                mCurrentPlayFragment.setPlaydata(album);
-                break;
+        LogUtil.d(TAG, "updatePlayFragment: ");
+        PlayListItem currentPlay = getCurrentPlayItem();
+        if (mPlayListToken instanceof FavPlayListToken) {
+            switchPlayFragment(getAndUpdateAudioPlayFragment(currentPlay), currentPlay.getAudioType() + "");
+        } else if (mPlayListToken instanceof MusicPlayListToken) {
+            Log.d(TAG, "MusicPlayListToken: ");
+            MusicVO music = (MusicVO) currentPlay.getAudio();
+            mCurrentPlayFragment.setPlaydata(music);
+        } else if (mPlayListToken instanceof RadioPlayListToken) {
+            RadioVO radio = (RadioVO) currentPlay.getAudio();
+            mCurrentPlayFragment.setPlaydata(radio);
+        } else if (mPlayListToken instanceof AlbumPlayListToken) {
+            AlbumVO album = (AlbumVO) currentPlay.getAudio();
+            mCurrentPlayFragment.setPlaydata(album);
         }
     }
 
@@ -461,7 +443,6 @@ public class AudioPlayActivityV2 extends AudioCenterBaseActivity implements MyMe
     //for play list
     @Override
     public void onItemClick(int position) {
-        LogUtil.d(TAG, "onItemClick: " + position + ",currentPlayListType:" + currentPlayListType);
         setCurrentAudio(position);
         updateWholeView();
     }
@@ -479,7 +460,7 @@ public class AudioPlayActivityV2 extends AudioCenterBaseActivity implements MyMe
 
     @Override
     public void onLoadMore() {
-        mPlayListManager.loadMore();
+        mPlayListToken.loadMore();
     }
 
 
@@ -507,7 +488,6 @@ public class AudioPlayActivityV2 extends AudioCenterBaseActivity implements MyMe
         for (int i = 0; i < list.size(); i++) {
             PlayItem item = list.get(i);
             LogUtil.d(TAG, "setPlayList ::" + item.getTitle() + "" + item.getPlayUrl());
-
         }
         Message msg = new Message();
         msg.what = AudioPlayerHandler.MSG_MEDIA_PLAYLIST_COMPLETE;
@@ -525,7 +505,7 @@ public class AudioPlayActivityV2 extends AudioCenterBaseActivity implements MyMe
 
     @Subscribe
     public void onAudioFavEvent(final PushAudioFavEvent fav) {
-
+        mPlayListToken.updateLocalPlayList();
 
     }
 
@@ -652,10 +632,32 @@ public class AudioPlayActivityV2 extends AudioCenterBaseActivity implements MyMe
 
         @Override
         public void onUpdate2ServerComplete(int resultcode, long id) {
+            LogUtil.e(TAG, "onUpdate2ServerComplete : " + resultcode);
 
+            switch (resultcode) {
+                case BasePlayListToken.PLAYLISTMANAGER_RESULT_SUCCESS:
+
+                    if (getCurrentPlayItem().getId().longValue() == id) {
+                        updatePlayControlFavUI();
+                    }
+                    break;
+                case BasePlayListToken.PLAYLISTMANAGER_RESULT_NONE:
+                    LogUtil.e(TAG, "PLAYLISTMANAGER_RESULT_NONE : ");
+                    Toast.makeText(AudioPlayActivityV2.this, "PLAYLISTMANAGER_RESULT_NONE", Toast.LENGTH_SHORT);
+
+                    break;
+                case BasePlayListToken.PLAYLISTMANAGER_RESULT_ERROR_NET:
+                    Toast.makeText(AudioPlayActivityV2.this, "PLAYLISTMANAGER_RESULT_ERROR_NET", Toast.LENGTH_SHORT);
+                    break;
+            }
         }
     }
 
+    private PlayListItem getCurrentPlayItem() {
+        LogUtil.d(TAG, "getCurrentPlayItem: " + currentPlayIndex);
+
+        return mPlayListToken.getPlayListItemFromIndext(currentPlayIndex);
+    }
 
     private class AudioPlayerHandler extends Handler {
         private static final int MSG_MEDIA_INIT_COMPLETE = 0;
