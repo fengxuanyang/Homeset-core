@@ -36,16 +36,12 @@ public class AlbumPlayListToken extends BasePlayListToken {
     }
 
     @Override
-    public void loadMore() {
-        if (isInitted) {
-            getTAGAlbums();
-            return;
-        }
-        LogUtil.e(TAG, "loadMore error not init isInitted: " + isInitted);
+    void loadMore(IPlayItemUpdateListener listener) {
+
     }
 
     @Override
-    void updateLocalPlayList() {
+    void updateLocalPlayList(IPlayListLoadListener listener, long id) {
 
     }
 
@@ -88,6 +84,4 @@ public class AlbumPlayListToken extends BasePlayListToken {
         };
         AudioCenterHttpManager.getInstance(mContext).getAlbums(mloadDataSubscriber, mTagDetail.getCategoryID(), mTagDetail.getName() == null ? Constants.DEFULT_CROSS_TALK : mTagDetail.getName(), currentPage, PAGE_COUNT);
     }
-
-
 }

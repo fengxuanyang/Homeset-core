@@ -3,7 +3,10 @@
   <component name="ProjectModuleManager">
     <modules>
       <module fileurl="file://$PROJECT_DIR$/Homeset-core.iml" filepath="$PROJECT_DIR$/Homeset-core.iml" />
+      <module fileurl="file://$PROJECT_DIR$/HomesetV3.iml" filepath="$PROJECT_DIR$/HomesetV3.iml" />
       <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" />
+      <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" />
+      <module fileurl="file://$PROJECT_DIR$/mediaservice/mediaservice.iml" filepath="$PROJECT_DIR$/mediaservice/mediaservice.iml" />
       <module fileurl="file://$PROJECT_DIR$/mediaservice/mediaservice.iml" filepath="$PROJECT_DIR$/mediaservice/mediaservice.iml" />
     </modules>
   </component>

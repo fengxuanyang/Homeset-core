@@ -38,18 +38,28 @@ public class MusicPlayListToken extends BasePlayListToken {
     }
 
     @Override
-    public void loadMore() {
-        if (isInitted) {
-            getTAGMusic();
-            return;
-        }
-        LogUtil.e(TAG, "loadMore error not init isInitted: " + isInitted);
+    void loadMore(IPlayItemUpdateListener listener) {
+
     }
 
     @Override
-    void updateLocalPlayList() {
+    void updateLocalPlayList(IPlayListLoadListener listener, long id) {
 
     }
+
+//    @Override
+//    public void loadMore() {
+//        if (isInitted) {
+//            getTAGMusic();
+//            return;
+//        }
+//        LogUtil.e(TAG, "loadMore error not init isInitted: " + isInitted);
+//    }
+//
+//    @Override
+//    void updateLocalPlayList() {
+//
+//    }
 
 
     private void getTAGMusic() {

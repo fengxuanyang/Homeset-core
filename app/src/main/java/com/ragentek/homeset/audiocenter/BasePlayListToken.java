@@ -2,6 +2,7 @@ package com.ragentek.homeset.audiocenter;
 
 import android.content.Context;
 
+import com.iflytek.cloud.thirdparty.A;
 import com.ragentek.homeset.audiocenter.model.bean.PlayItem;
 import com.ragentek.homeset.audiocenter.model.bean.PlayListItem;
 import com.ragentek.homeset.audiocenter.model.bean.TagDetail;
@@ -37,6 +38,7 @@ public abstract class BasePlayListToken {
         mTagDetail = tag;
         mContext = context;
     }
+
 
     public void init(PlayListManagerListener playListManagerListener) {
         mPlayListManagerListener = playListManagerListener;
@@ -166,16 +168,24 @@ public abstract class BasePlayListToken {
         return -1;
     }
 
-    class PlayListManagerException extends Exception {
-        public PlayListManagerException(String msg) {
-            super(msg);
+    abstract void loadMore(IPlayItemUpdateListener listener);
+
+
+    abstract void updateLocalPlayList(IPlayListLoadListener listener, long id);
+
+
+    private class PlayListListener implements IPlayItemUpdateListener, IPlayListLoadListener {
+
+        @Override
+        public void onUpDate(long id) {
+
         }
 
+        @Override
+        public void onLoadData(int resultCode, List<PlayListItem> resultmessage) {
+
+        }
     }
-
-    abstract void loadMore();
-
-    abstract void updateLocalPlayList();
 
 
 }
